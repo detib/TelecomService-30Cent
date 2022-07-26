@@ -7,9 +7,11 @@ import Util.ID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
+@ToString
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Contact {

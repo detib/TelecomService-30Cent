@@ -3,11 +3,14 @@ package CRM;
 import CRM.Enum.ContractType;
 import CRM.Enum.CustomerType;
 import CRM.Enum.STATE;
+import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ContractException;
 import CRM.Exceptions.CustumerException;
+import Database.ContactService;
 import Database.DatabaseConn;
 import Database.TelecomService;
 import Util.ID;
+import Util.Util;
 import lombok.*;
 
 import java.sql.Connection;
@@ -21,7 +24,7 @@ import java.util.Optional;
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 
-public class Customer implements TelecomService<Contract> {
+public class Customer implements TelecomService<Contract>, ContactService {
     @EqualsAndHashCode.Include
     private final String id;
     private final LocalDate createdDate;
@@ -55,11 +58,13 @@ public class Customer implements TelecomService<Contract> {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             boolean success = conn.createStatement().execute(String.format(
-                    "INSERT INTO contract VALUES('%s', '%s', '%s','%s', '%s')",
-                    object.getId(), object.getContractType(), object.getCreatedDate(), object.getState(), this.id));
+                    "INSERT INTO contract VALUES('%s', '%s', '%s','%s', '%s', '%s')",
+                    object.getId(), object.getContractType(), object.getCreatedDate(),
+                    object.getState(), this.id, object.getContact().getId()));
             if(success) return contracts.add(object); else return false;
         } catch (SQLException e) {
-            throw new ContractException("Cannot add a contract to the database!");
+            throw new RuntimeException(e);
+//            throw new ContractException("Cannot add a contract to the database!");
         }
     }
 
@@ -91,12 +96,47 @@ public class Customer implements TelecomService<Contract> {
                 ContractType contractType = ContractType.valueOf(resultSetContracts.getString("contractType"));
                 LocalDate createdDate = LocalDate.parse(resultSetContracts.getString("createdDate"));
                 STATE customerType = STATE.valueOf(resultSetContracts.getString("state"));
-                Contract contract = new Contract(id, contractType, createdDate, state);
-                allContracts.add(contract);
+                Optional<Contact> optionalContact = Util.findContactById(resultSetContracts.getString("contact"));
+                Contact contact;
+                if(optionalContact.isPresent()) {
+                    contact = optionalContact.get();
+                    Contract contract = new Contract(id, contractType, createdDate, state, contact);
+                    allContracts.add(contract);
+                }
             }
             return allContracts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } catch (ContactException cte) {
+            System.out.println("Error on querying contact:" + cte.getMessage());
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void createContact() throws ContactException {
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            if(this.customerType == CustomerType.BUSINESS) {
+                conn.createStatement().execute(
+                        String.format(
+                                "INSERT INTO contact(CtId, IdType, CreatedDate, State, CustomerName)" +
+                                        "VALUES('%s', '%s', '%s', '%s', '%s')",
+                                contact.getId(), contact.getIdType(),
+                                contact.getCreatedDate(), contact.getState(), contact.getCustomerName()
+                        ));
+            } else if(this.customerType == CustomerType.INDIVIDUAL) {
+                conn.createStatement().execute(
+                        String.format(
+                                "INSERT INTO contact(CtId, Name, LastName, Gender, Dob, IdType, CreatedDate, State) " +
+                                        "VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                                contact.getId(), contact.getName(), contact.getLastname(), contact.getGender(),
+                                contact.getDob(), contact.getIdType(), contact.getCreatedDate(), contact.getState()
+                                ));
+            }
+
+        } catch (SQLException e) {
+            throw new ContactException("Customer: Could not create contact: " + e.getMessage());
         }
     }
 

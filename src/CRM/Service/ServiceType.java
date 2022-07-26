@@ -1,7 +1,7 @@
 package CRM.Service;
 
 public interface ServiceType {
-    int spendAmount();
+//    int spendAmount();
 
-    int buyAmount();
+//    int buyAmount();
 }

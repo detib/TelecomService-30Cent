@@ -73,15 +73,16 @@ public class Util {
         System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
         ContractType contractType;
         while(true){
-            try{
-                contractType = ContractType.valueOf(sc.nextLine().toUpperCase());
+            try {
+                String contype = sc.nextLine();
+                contractType = ContractType.valueOf(contype.toUpperCase());
                 break;
-            } catch (IllegalArgumentException iex){
-                System.out.println("Wrong Type... Please try again!");
+            } catch (IllegalArgumentException iex) {
+                System.out.print("Wrong Type... Please try again!");
                 System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
             }
-
-        }   return new Contract(contractType, new Contact(ID.CONTRACT));
+        }
+        return new Contract(contractType, new Contact(ID.CONTRACT));
     }
 
     public static Contract updateContract(Scanner sc, Contract contract) { // Update Contract
@@ -109,13 +110,10 @@ public class Util {
             ResultSet resultContact = conn.createStatement()
                     .executeQuery(String.format(
                             "SELECT * FROM contact where CtID = '%s'", id));
-            if(!resultContact.first()) return Optional.empty();
             while(resultContact.next()) {
                 String ctID = resultContact.getString("CtID");
                 String name = resultContact.getString("Name");
                 String lastname = resultContact.getString("Lastname");
-                Gender gender = Gender.valueOf(resultContact.getString("Gender"));
-                LocalDate dob = LocalDate.parse(resultContact.getString("Dob"));
                 ID idType = ID.valueOf(resultContact.getString("IdType"));
                 LocalDate createdDate = LocalDate.parse(resultContact.getString("CreatedDate"));
                 STATE state = STATE.valueOf(resultContact.getString("State"));
@@ -123,6 +121,8 @@ public class Util {
                 if(customerName != null) {
                     return Optional.of(new Contact(ctID, idType, createdDate, state, customerName));
                 } else if(name != null) {
+                    LocalDate dob = LocalDate.parse(resultContact.getString("Dob"));
+                    Gender gender = Gender.valueOf(resultContact.getString("Gender"));
                     return Optional.of(new Contact(id, name, lastname, gender, dob, idType, createdDate, state));
                 } else {
                     return Optional.of(new Contact(ctID, idType, createdDate, state));

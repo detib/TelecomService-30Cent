@@ -32,6 +32,11 @@ public class Contract {
         this.contact = contact;
     }
 
-    // method to create subscription
-
+    public Contract(String id, ContractType contractType, LocalDate createdDate, STATE state, Contact contact) {
+        this.id = id;
+        this.contractType = contractType;
+        this.createdDate = createdDate;
+        this.state = state;
+        this.contact = contact;
+    }
 }
