@@ -44,4 +44,16 @@ public class Contact {
         this(idType);
         this.customerName = customerName;
     }
+
+    public Contact(String id, String name, String lastname, Gender gender, LocalDate dob, ID idType, LocalDate createdDate, STATE state, String customerName) {
+        this.id = id;
+        this.name = name;
+        this.lastname = lastname;
+        this.gender = gender;
+        this.dob = dob;
+        this.idType = idType;
+        this.createdDate = createdDate;
+        this.state = state;
+        this.customerName = customerName;
+    }
 }
