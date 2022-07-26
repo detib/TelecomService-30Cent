@@ -16,11 +16,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Getter
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Subscription implements TelecomService<Service> {
+public class Subscription implements TelecomService<Service>{
     private final String id;
     private ContractType contractType;
     private final LocalDate createdDate;
@@ -74,22 +75,24 @@ public class Subscription implements TelecomService<Service> {
     }
 
     @Override
-    public Service findById(String id) {
+    public Optional<Service> findById(String id) {
         for (Service service : services){
             if (service.getId().equals(id)){
-                return service;
+                return Optional.of(service);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public ResultSet findAll() {
-        try{
-            Connection conn = DatabaseConn.getInstance().getConnection();
-            return conn.createStatement().executeQuery("SELECT * FROM Service");
-        } catch (SQLException e){
-            throw new RuntimeException(e);
-        }
+    public ArrayList<Service> findAll() {
+//        try{
+//            Connection conn = DatabaseConn.getInstance().getConnection();
+//            return conn.createStatement().executeQuery("SELECT * FROM Service");
+//        } catch (SQLException e){
+//            throw new RuntimeException(e);
+//        }
+    return null;
     }
+
 }

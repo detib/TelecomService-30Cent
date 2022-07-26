@@ -31,6 +31,14 @@ public class Contact {
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
     }
+    public Contact(String id, ID idType, LocalDate createdDate, STATE state) { // Contacts
+        this.id = id;
+        this.idType = idType;
+        this.createdDate = createdDate;
+        this.state = state;
+    }
+
+
 
     public Contact(ID idType, String name, String lastname, Gender gender, LocalDate dob) { // Individual
         this(idType);
@@ -45,15 +53,16 @@ public class Contact {
         this.customerName = customerName;
     }
 
-    public Contact(String id, String name, String lastname, Gender gender, LocalDate dob, ID idType, LocalDate createdDate, STATE state, String customerName) {
-        this.id = id;
+    public Contact(String id, ID idType, LocalDate createdDate, STATE state, String customerName) {
+        this(id, idType, createdDate, state);
+        this.customerName = customerName;
+    }
+
+    public Contact(String id, String name, String lastname, Gender gender, LocalDate dob, ID idType, LocalDate createdDate, STATE state) {
+        this(id, idType, createdDate, state);
         this.name = name;
         this.lastname = lastname;
         this.gender = gender;
         this.dob = dob;
-        this.idType = idType;
-        this.createdDate = createdDate;
-        this.state = state;
-        this.customerName = customerName;
     }
 }

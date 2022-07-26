@@ -7,13 +7,22 @@ import CRM.Enum.ContractType;
 import CRM.Enum.CustomerType;
 import CRM.Enum.Gender;
 import CRM.Enum.STATE;
+import CRM.Exceptions.ContactException;
+import CRM.Exceptions.ContractException;
 import CRM.Subscription;
+import Database.DatabaseConn;
+import lombok.Getter;
 
+import java.lang.reflect.GenericSignatureFormatError;
 import java.nio.file.FileAlreadyExistsException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Util {
@@ -90,5 +99,39 @@ public class Util {
         return contract;
     }
 
-//    public static Subscription createSubsciption(Scanner sc, )
+    public static Subscription createSubscriber(Scanner sc){
+        return null;
+    }
+
+    public static Optional<Contact> findContactById(String id) throws ContactException{
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            ResultSet resultContact = conn.createStatement()
+                    .executeQuery(String.format(
+                            "SELECT * FROM contact where CtID = '%s'", id));
+            if(!resultContact.first()) return Optional.empty();
+            while(resultContact.next()) {
+                String ctID = resultContact.getString("CtID");
+                String name = resultContact.getString("Name");
+                String lastname = resultContact.getString("Lastname");
+                Gender gender = Gender.valueOf(resultContact.getString("Gender"));
+                LocalDate dob = LocalDate.parse(resultContact.getString("Dob"));
+                ID idType = ID.valueOf(resultContact.getString("IdType"));
+                LocalDate createdDate = LocalDate.parse(resultContact.getString("CreatedDate"));
+                STATE state = STATE.valueOf(resultContact.getString("State"));
+                String customerName = resultContact.getString("CustomerName");
+                if(customerName != null) {
+                    return Optional.of(new Contact(ctID, idType, createdDate, state, customerName));
+                } else if(name != null) {
+                    return Optional.of(new Contact(id, name, lastname, gender, dob, idType, createdDate, state));
+                } else {
+                    return Optional.of(new Contact(ctID, idType, createdDate, state));
+                }
+            }
+        } catch (SQLException e) {
+            throw new ContactException(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
 }
