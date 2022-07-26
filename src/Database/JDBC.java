@@ -15,12 +15,12 @@ public class JDBC {
 
         Connection con =  DatabaseConn.getInstance().getConnection();
 
-        ResultSet resultSet = con.createStatement().executeQuery("Select * from studenti");
+        ResultSet resultSet = con.createStatement().executeQuery("Show tables;");
 
 
 
         while (resultSet.next()) {
-            System.out.printf("Name: %s, Surname: %s, Qyteti: %s%n", resultSet.getString("emri"), resultSet.getString("mbiemri"), resultSet.getString("qyteti"));
+            System.out.printf("%s\n", resultSet.getString("Tables_in_Telecom_20Cent"));
         }
 
     }
