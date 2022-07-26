@@ -1,7 +1,7 @@
 package Database;
 
 
-import CRM.Contact.Contact;
+import CRM.Contact;
 
 import java.sql.ResultSet;
 

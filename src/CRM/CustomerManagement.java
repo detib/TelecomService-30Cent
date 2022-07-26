@@ -1,6 +1,5 @@
 package CRM;
 
-import CRM.Contact.Contact;
 import Database.TelecomService;
 
 import java.sql.ResultSet;

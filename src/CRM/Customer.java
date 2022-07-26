@@ -1,9 +1,7 @@
 package CRM;
 
-import CRM.Contact.Contact;
 import CRM.Enum.CustomerType;
 import CRM.Enum.STATE;
-import Database.TelecomService;
 import Util.ID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

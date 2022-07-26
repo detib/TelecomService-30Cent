@@ -1,4 +1,4 @@
-package CRM.Contact;
+package CRM;
 
 import CRM.Enum.Gender;
 import CRM.Enum.STATE;
