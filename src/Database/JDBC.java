@@ -19,6 +19,5 @@ public class JDBC {
         while (resultSet.next()) {
             System.out.printf("%s\n", resultSet.getString("Tables_in_Telecom_20Cent"));
         }
-
     }
 }
