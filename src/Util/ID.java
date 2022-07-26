@@ -1,5 +1,11 @@
 package Util;
 
+import Database.DatabaseConn;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public enum ID {
     CONTACT("CNT"),
     CUSTOMER("CUS"),
@@ -27,6 +33,18 @@ public enum ID {
     }
 
     public String createId() {
-        return String.format("%S_%d", prefix, ++count);
+        try {
+            Connection con = DatabaseConn.getInstance().getConnection();
+            ResultSet counter = con.createStatement().executeQuery(String.format("SELECT %s from counter;", prefix));
+            int counterValue = 0;
+            if (counter.next()) {
+                counterValue = counter.getInt(prefix);
+            }
+            con.createStatement().executeUpdate(String.format("UPDATE counter SET %s=%s+1;", prefix, prefix));
+            Long currentCounter = counterValue + count;
+            return String.format("%S_%d", prefix, currentCounter);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
