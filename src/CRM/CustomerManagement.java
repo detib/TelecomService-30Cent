@@ -129,25 +129,29 @@ public class CustomerManagement implements TelecomService<Customer> {
                 throw new RuntimeException(e);
             }
         } else if(Objects.equals(choice, "2")) {
-            cm.customers.forEach(System.out::println);
-            System.out.print("Enter a customer id: ");
-            Optional<Customer> cust;
-            if((cust = cm.findById(sc.nextLine())).isPresent()) {
-                Customer customer = cust.get();
-                System.out.print("How many contracts do you want to create: ");
-                Integer contracts = Integer.parseInt(sc.nextLine());
+            if(cm.customers.size() != 0) {
+                cm.customers.forEach(System.out::println);
+                System.out.print("Enter a customer id: ");
+                Optional<Customer> cust;
+                if((cust = cm.findById(sc.nextLine())).isPresent()) {
+                    Customer customer = cust.get();
+                    System.out.print("How many contracts do you want to create: ");
+                    Integer contracts = Integer.parseInt(sc.nextLine());
 
-                for (int i = 0; i < contracts; i++) {
-                    try {
-                        customer.create(Util.createContract(sc));
-                    } catch (ContractException e) {
-                        System.out.println("Could not create contract.");
+                    for (int i = 0; i < contracts; i++) {
+                        try {
+                            customer.create(Util.createContract(sc));
+                        } catch (ContractException e) {
+                            System.out.println("Could not create contract.");
+                        }
                     }
+                    ArrayList<Contract> all = customer.findAll();
+                    all.forEach(System.out::println);
+                } else {
+                    System.out.println("Account does not exist!");
                 }
-                ArrayList<Contract> all = customer.findAll();
-                all.forEach(System.out::println);
             } else {
-                System.out.println("Account does not exist!");
+                System.out.println("No Customers available;");
             }
         }
     }
