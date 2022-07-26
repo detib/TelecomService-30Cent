@@ -28,12 +28,13 @@ public class IndividualCustomer extends Customer{
     private IndividualContact contact;
 
     public IndividualCustomer(String name, String lastname, Long idNumber,
-                              Gender gender, LocalDate dob) {
+                              Gender gender, LocalDate dob, IndividualContact contact) {
         this.name = name;
         this.lastname = lastname;
         this.idNumber = idNumber;
         this.gender = gender;
         this.dob = dob;
+        this.contact = contact;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class IndividualCustomer extends Customer{
             con = DatabaseConn.getInstance().getConnection();
             return con.createStatement().execute(
                     String.format("INSERT INTO IndividualCustomer VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
-                            getId(), name, lastname, idNumber, gender, dob, contact, getCreatedDate(), getState()));
+                            getId(), name, lastname, idNumber, gender, dob, contact.getId(), getCreatedDate(), getState()));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -71,37 +72,29 @@ public class IndividualCustomer extends Customer{
         return false;
     }
 
+    // LOOK AT IT LATER
     @Override
     public ResultSet findById() {
-        return null;
+        Connection con = null;
+        try {
+            con = DatabaseConn.getInstance().getConnection();
+            return con.createStatement().executeQuery(
+                    String.format("Select * from IndividualCustomer where CuId='%s';", getId()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public ResultSet findAll() {
-        return null;
-    }
-
-//    public static void main(String[] args) {
-//        IndividualCustomer i = new IndividualCustomer("Blendi", "RRustemi", 1170609995L,
-//                Gender.M, LocalDate.of(2001, 01, 13));
-//        if(i.create()) {
-//            System.out.println("Created");
-//        } else {
-//            System.out.println("Not Created");
-//        }
-//    }
-
-    public static void main(String[] args) {
-        new IndividualCustomer("aa", "bb", 123132L, Gender.F, LocalDate.of(2000,10,10));
-        new IndividualCustomer("aa", "bb", 123132L, Gender.F, LocalDate.of(2000,10,10));
-        new IndividualCustomer("aa", "bb", 123132L, Gender.F, LocalDate.of(2000,10,10));
-        IndividualCustomer i = new IndividualCustomer("QEJNGsadasdJT", "MBIEMRIIGRUJES", 1235L, Gender.F,
-                LocalDate.of(2001, 01, 13));
-        i.create();
-        i.setName("UNDRRUE");
-        i.setGender(Gender.M);
-        i.setState(STATE.DEACTIVE);
-        i.update();
+        Connection con = null;
+        try {
+            con = DatabaseConn.getInstance().getConnection();
+            return con.createStatement().executeQuery(
+                    String.format("Select * from IndividualCustomer"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
