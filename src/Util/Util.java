@@ -9,9 +9,11 @@ import CRM.Enum.Gender;
 import CRM.Enum.STATE;
 import CRM.Subscription;
 
+import java.nio.file.FileAlreadyExistsException;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Util {
@@ -41,11 +43,23 @@ public class Util {
         return null;
     }
 
-//    public static Contract createContract(Scanner sc) { // Create Contract and Subscription
-//        System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
-//        ContractType contractType = ContractType.valueOf(sc.nextLine().toUpperCase());
-//        System.out.print("Do you want to get the Mobile Application features: ");
-//
-//        Subscription subscription = new Subscription(contractType, true);
-//    }
+    public static Customer updateCustomer(Scanner sc, Customer customer){
+        System.out.printf("Currently your STATE is: %s\n", customer.getState());
+        System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE): ");
+        String updateChoice = sc.nextLine().toUpperCase();
+        customer.setState(STATE.valueOf(updateChoice));
+
+        return customer;
+    }
+
+    public static Contract createContract(Scanner sc) { // Create Contract and Subscription
+        System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
+        ContractType contractType = ContractType.valueOf(sc.nextLine().toUpperCase());
+        System.out.print("Do you want to get the Mobile Application features(Y/N): ");
+        String mobileChoice = sc.nextLine();
+        boolean mobileApp = Objects.equals(mobileChoice, "Y") || Objects.equals(mobileChoice, "y");
+
+        Subscription subscription = new Subscription(contractType, mobileApp);
+        return new Contract(contractType);
+    }
 }
