@@ -1,15 +1,23 @@
 package CRM;
 
+import CRM.Enum.CustomerType;
 import Database.TelecomService;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class CustomerManagement implements TelecomService<Customer> {
+
+    private ArrayList<Customer> customers;
+
+    public CustomerManagement() {
+        this.customers = new ArrayList<>();
+    }
 
     @Override
     public boolean create(Customer object) {
 
-        return false;
+
     }
 
     @Override
@@ -23,7 +31,13 @@ public class CustomerManagement implements TelecomService<Customer> {
     }
 
     @Override
-    public ResultSet findById(String id) {
+    public Customer findById(String id) {
+//        customers.stream()
+//                .filter(c -> c.getId().equals(id))
+//                .findFirst()
+//                .ifPresent(c -> {
+//                    return c;
+//                });
         return null;
     }
 
@@ -31,4 +45,5 @@ public class CustomerManagement implements TelecomService<Customer> {
     public ResultSet findAll() {
         return null;
     }
+
 }
