@@ -8,6 +8,6 @@ public interface TelecomService<T> {
 
     boolean delete(T object);
 
-    ResultSet findById(String id);
+    T findById(String id);
     ResultSet findAll();
 }
