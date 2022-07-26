@@ -24,14 +24,11 @@ public class Subscription {
     private STATE state;
     @ToString.Exclude
     private ArrayList<Service> services;
-    @Setter
-    private boolean mobileApp;
 
-    public Subscription(ContractType contractType, boolean mobileApp) {
+    public Subscription(ContractType contractType) {
         this.id = ID.SUBSCRIPTION.createId();
         this.contractType = contractType;
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
-        this.mobileApp = mobileApp;
     }
 }

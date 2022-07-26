@@ -59,14 +59,16 @@ public class Util {
         return customer;
     }
 
+    /**
+     *
+     * @// TODO:
+     */
     public static Contract createContract(Scanner sc) { // Create Contract and Subscription
         System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
         ContractType contractType = ContractType.valueOf(sc.nextLine().toUpperCase());
-        System.out.print("Do you want to get the Mobile Application features(Y/N): ");
-        String mobileChoice = sc.nextLine();
-        boolean mobileApp = Objects.equals(mobileChoice, "Y") || Objects.equals(mobileChoice, "y");
+        // maybe mobile app later
 
-        Subscription subscription = new Subscription(contractType, mobileApp);
+        Subscription subscription = new Subscription(contractType);
         return new Contract(contractType);
     }
 }

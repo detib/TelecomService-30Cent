@@ -30,4 +30,6 @@ public class Contract {
         this.state = STATE.ACTIVE;
     }
 
+    // method to create subscription
+
 }
