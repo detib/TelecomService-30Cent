@@ -1,6 +1,7 @@
 package CRM;
 
 import CRM.Enum.STATE;
+import Database.TelecomService;
 import Util.ID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 @Getter
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public abstract class Customer {
+public abstract class Customer implements TelecomService {
     @EqualsAndHashCode.Include
     private final String id;
     private final LocalDate createdDate;
