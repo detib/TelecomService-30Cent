@@ -20,14 +20,16 @@ public class Contract {
     private final LocalDate createdDate;
     @Setter
     private STATE state;
+    private Contact contact;
     @ToString.Exclude
     private ArrayList<Subscription> subscription;
 
-    public Contract(ContractType contractType) {
+    public Contract(ContractType contractType, Contact contact) {
         this.id = ID.CONTRACT.createId();
         this.contractType = contractType;
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
+        this.contact = contact;
     }
 
     // method to create subscription

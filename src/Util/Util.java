@@ -45,9 +45,10 @@ public class Util {
 
     public static Customer updateCustomer(Scanner sc, Customer customer) {
         System.out.printf("Currently your STATE is: %s\n", customer.getState());
-        System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE): ");
+        System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE) or 'Q' to exit: ");
         while (true){
             String updateChoice = sc.nextLine().toUpperCase();
+            if (updateChoice.equalsIgnoreCase("q")) return customer;
             try {
                 customer.setState(STATE.valueOf(updateChoice));
                 break;
@@ -59,16 +60,35 @@ public class Util {
         return customer;
     }
 
-    /**
-     *
-     * @// TODO:
-     */
     public static Contract createContract(Scanner sc) { // Create Contract and Subscription
         System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
-        ContractType contractType = ContractType.valueOf(sc.nextLine().toUpperCase());
-        // maybe mobile app later
+        ContractType contractType;
+        while(true){
+            try{
+                contractType = ContractType.valueOf(sc.nextLine().toUpperCase());
+                break;
+            } catch (IllegalArgumentException iex){
+                System.out.println("Wrong Type... Please try again!");
+                System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
+            }
 
-        Subscription subscription = new Subscription(contractType);
-        return new Contract(contractType);
+        }   return new Contract(contractType, new Contact(ID.CONTRACT));
     }
+
+    public static Contract updateContract(Scanner sc, Contract contract) { // Update Contract
+        System.out.printf("Currently your STATE is: %s", contract.getState());
+        System.out.print("What do you want to change the State to (PREPAID, POSTPAID): ");
+        while (true) {
+            String updateChoice = sc.nextLine().toUpperCase();
+            try {
+                contract.setState(STATE.valueOf(updateChoice));
+                break;
+            } catch (IllegalArgumentException ex){
+                System.out.println("State must be PREPAID/POSTPAID");
+            }
+        }
+        return contract;
+    }
+
+//    public static Subscription createSubsciption(Scanner sc, )
 }
