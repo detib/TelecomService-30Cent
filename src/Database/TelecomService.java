@@ -2,12 +2,12 @@ package Database;
 
 import java.sql.ResultSet;
 
-public interface TelecomService {
-    boolean create();
-    boolean update();
+public interface TelecomService<T> {
+    boolean create(T object);
+    boolean update(T object);
 
-    boolean delete();
+    boolean delete(T object);
 
-    ResultSet findById();
+    ResultSet findById(String id);
     ResultSet findAll();
 }
