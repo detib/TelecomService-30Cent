@@ -2,19 +2,26 @@ package CRM;
 
 import CRM.Enum.STATE;
 import Util.ID;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Getter
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public abstract class Customer {
+    @EqualsAndHashCode.Include
     private final String id;
     private final LocalDate createdDate;
     @Setter
     private STATE state;
+    // @TODO change setter
 
+    @ToString.Exclude
     private ArrayList<Contract> contracts;
 
     public Customer() {
@@ -23,5 +30,13 @@ public abstract class Customer {
         this.state = STATE.ACTIVE;
     }
 
+    public boolean addContract(Contract cr) {
+        return contracts.add(cr);
+    }
+
+    // @TODO finish
+    public Contract removeContract(ID id) {
+        return contracts.remove(1);
+    }
 
 }

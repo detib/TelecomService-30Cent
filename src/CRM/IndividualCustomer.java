@@ -2,12 +2,12 @@ package CRM;
 
 import CRM.Contact.IndividualContact;
 import CRM.Enum.Gender;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDate;
 
 @Getter
+@ToString(callSuper = true)
 public class IndividualCustomer extends Customer{
     @Setter
     private String name;
@@ -30,10 +30,5 @@ public class IndividualCustomer extends Customer{
         this.dob = dob;
     }
 
-    @Override
-    public String toString(){
-        return String.format("Customer: %s, Name: %s, Surname: %s, ID Number: %s, Gender: %s, Date of Birth: %s",
-                getId(), name, lastname, idNumber, gender, dob);
-    }
 
 }
