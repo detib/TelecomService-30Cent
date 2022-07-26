@@ -43,12 +43,19 @@ public class Util {
         return null;
     }
 
-    public static Customer updateCustomer(Scanner sc, Customer customer){
+    public static Customer updateCustomer(Scanner sc, Customer customer) {
         System.out.printf("Currently your STATE is: %s\n", customer.getState());
         System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE): ");
-        String updateChoice = sc.nextLine().toUpperCase();
-        customer.setState(STATE.valueOf(updateChoice));
+        while (true){
+            String updateChoice = sc.nextLine().toUpperCase();
+            try {
+                customer.setState(STATE.valueOf(updateChoice));
+                break;
+            } catch (IllegalArgumentException ex) {
+                System.out.println("State must be ACTIVE/DEACTIVE/INACTIVE");
+            }
 
+        }
         return customer;
     }
 
