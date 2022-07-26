@@ -3,17 +3,16 @@ package CRM;
 import CRM.Enum.CustomerType;
 import CRM.Enum.STATE;
 import Util.ID;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+import javax.swing.plaf.nimbus.State;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Getter
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+
 public class Customer {
     @EqualsAndHashCode.Include
     private final String id;
@@ -21,6 +20,7 @@ public class Customer {
     @Setter
     private STATE state;
     private CustomerType customerType;
+
     private Contact contact;
     @ToString.Exclude
     private ArrayList<Contract> contracts;
@@ -29,6 +29,14 @@ public class Customer {
         this.id = ID.CUSTOMER.createId();
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
+        this.customerType = customerType;
+        this.contact = contact;
+    }
+
+    public Customer(String id, LocalDate createdDate, STATE state, CustomerType customerType, Contact contact) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.state = state;
         this.customerType = customerType;
         this.contact = contact;
     }
