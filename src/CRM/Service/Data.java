@@ -28,4 +28,8 @@ public class Data implements ServiceType {
     public String getTypeAmount() {
         return "DAT_" + getMB();
     }
+    @Override
+    public String toString() {
+        return String.format("DATA_%d", mB);
+    }
 }
