@@ -1,8 +1,9 @@
 package CRM.Service;
 
 import lombok.Getter;
+import lombok.ToString;
 
-    @Getter
+@Getter
 public class Voice implements ServiceType {
     private final Integer price = 10; // cents
     private final Integer fullPrice;
@@ -26,5 +27,10 @@ public class Voice implements ServiceType {
     @Override
     public String getTypeAmount() {
         return "VOI_" + getMinutes();
+    }
+
+    @Override
+        public String toString (){
+            return String.format("VOICE_%d", minutes);
     }
 }
