@@ -24,4 +24,9 @@ public class SimCard implements ServiceType {
     public String getTypeAmount() {
         return "SIM_" + getCredits();
     }
+
+    @Override
+    public String toString (){
+        return String.format("SIMCARD_%d", credits);
+    }
 }

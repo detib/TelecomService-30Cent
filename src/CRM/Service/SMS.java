@@ -28,4 +28,9 @@ public class SMS implements ServiceType {
     public String getTypeAmount() {
         return "SMS_" + getMessages();
     }
+
+    @Override
+    public String toString (){
+        return String.format("SMS_%d", messages);
+    }
 }
