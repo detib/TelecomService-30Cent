@@ -101,8 +101,20 @@ public class Util {
         return contract;
     }
 
-    public static Subscription createSubscriber(Scanner sc){
-        return null;
+    public static Subscription updateSubscription(Scanner sc, Subscription subscription){
+        System.out.printf("Your State is: %s", subscription.getState());
+        System.out.print("What do you want to change the State to (ACTIVE, DEACTIVE, INACTIVE) or 'Q' to exit");
+        while(true){
+            String updateChoice = sc.nextLine();
+            if(updateChoice.equalsIgnoreCase("q")) return subscription;
+            try {
+                subscription.setState(STATE.valueOf(updateChoice));
+                break;
+            } catch (IllegalArgumentException ex){
+                System.out.println("State must be (ACTIVE, DEACTIVE, INACTIVE)!");
+            }
+        }
+        return subscription;
     }
 
     public static Optional<Contact> findContactById(String id) throws ContactException{
