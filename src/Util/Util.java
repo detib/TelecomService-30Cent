@@ -250,6 +250,7 @@ public class Util {
                 sc.nextLine();
             }
         }
+        sc.nextLine();
         System.out.print("What do you want to call this product? : ");
         String productName = sc.nextLine();
         System.out.print("What type of product do you want (PREPAID, POSTPAID): ");

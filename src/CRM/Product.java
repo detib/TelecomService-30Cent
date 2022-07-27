@@ -8,10 +8,12 @@ import CRM.Service.Voice;
 import Util.ID;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
+@ToString
 public class Product {
     private final String id;
     private SimCard simCard;

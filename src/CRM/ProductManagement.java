@@ -1,5 +1,6 @@
 package CRM;
 
+import CRM.Enum.ContractType;
 import CRM.Exceptions.ProductException;
 import CRM.Service.Data;
 import CRM.Service.SMS;
@@ -8,6 +9,7 @@ import CRM.Service.Voice;
 import Database.DatabaseConn;
 import Database.TelecomService;
 import Util.Util;
+import lombok.Getter;
 
 import java.awt.*;
 import java.sql.Connection;
@@ -20,6 +22,7 @@ import java.util.Scanner;
 
 public class ProductManagement implements TelecomService<Product> {
 
+    @Getter
     private ArrayList<Product> products;
 
     public ProductManagement() {
@@ -67,7 +70,7 @@ public class ProductManagement implements TelecomService<Product> {
     public ArrayList<Product> findAll() {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            ResultSet allProducts = conn.createStatement().executeQuery("select * from products");
+            ResultSet allProducts = conn.createStatement().executeQuery("select * from product");
             ArrayList<Product> tempProducts = new ArrayList<>();
             while(allProducts.next()) {
                 String id = allProducts.getString("productID");
@@ -79,11 +82,25 @@ public class ProductManagement implements TelecomService<Product> {
                 LocalDate toDate = LocalDate.parse(allProducts.getString("toDate"));
                 Integer price = allProducts.getInt("price");
                 String productName = allProducts.getString("productName");
-                tempProducts.add(new Product(id, simCard, sms, voice, data, fromDate, toDate, price, productName));
+                ContractType contractType = ContractType.valueOf(allProducts.getString("contractType"));
+                tempProducts.add(new Product(id, simCard, sms, voice, data, fromDate, toDate, price, productName, contractType));
             }
             return tempProducts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) {
+        ProductManagement pm = new ProductManagement();
+        Scanner sc = new Scanner(System.in);
+//        for (int i = 0; i < 5; i++) {
+//            try {
+//                pm.create(Util.getProduct(sc));
+//            } catch (ProductException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+        pm.products.forEach(System.out::println);
     }
 }
