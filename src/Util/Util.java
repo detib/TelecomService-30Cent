@@ -9,6 +9,7 @@ import CRM.Enum.Gender;
 import CRM.Enum.STATE;
 import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ContractException;
+import CRM.Service.Service;
 import CRM.Subscription;
 import Database.DatabaseConn;
 import lombok.Getter;
@@ -99,6 +100,30 @@ public class Util {
             }
         }
         return contract;
+    }
+
+    public static Subscription getSubscription(Scanner sc) {
+        System.out.print("Which Phone Number option do you want (044, 045, 046): ");
+        loop: while (true){
+            String phoneChoice = sc.nextLine();
+            PhoneNumber phoneNumber;
+            switch (phoneChoice) {
+                case "044" -> {
+                    phoneNumber = PhoneNumber.FOUR;
+                    return new Subscription(new Contact(ID.SUBSCRIPTION), phoneNumber);
+                }
+                case "045" -> {
+                    phoneNumber = PhoneNumber.FIVE;
+                    return new Subscription(new Contact(ID.SUBSCRIPTION), phoneNumber);
+                }
+                case "046" -> {
+                    phoneNumber = PhoneNumber.SIX;
+                    return new Subscription(new Contact(ID.SUBSCRIPTION), phoneNumber);
+                }
+                default -> System.out.println("Choose from the following (044, 045, 046)");
+            }
+        }
+
     }
 
     public static Subscription updateSubscription(Scanner sc, Subscription subscription){
