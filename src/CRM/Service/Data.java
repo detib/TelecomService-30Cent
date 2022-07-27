@@ -7,9 +7,9 @@ public class Data implements ServiceType {
     @Getter
     private final Integer fullPrice;
     @Getter
-    private int mB;
+    private Integer mB;
 
-    public Data(int mB) {
+    public Data(Integer mB) {
         this.mB = mB;
         this.fullPrice = mB * price;
     }

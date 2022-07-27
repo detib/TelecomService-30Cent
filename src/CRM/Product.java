@@ -1,5 +1,6 @@
 package CRM;
 
+import CRM.Enum.ContractType;
 import CRM.Service.Data;
 import CRM.Service.SMS;
 import CRM.Service.SimCard;
@@ -22,9 +23,10 @@ public class Product {
     @Setter
     private Integer price;
     private String productName;
+    private ContractType contractType;
 
     public Product(SimCard simCard, SMS sms, Voice voice, Data data,
-                   LocalDate fromDate, LocalDate toDate, String productName) {
+                   LocalDate fromDate, LocalDate toDate, String productName, ContractType contractType) {
         this.id = ID.PRODUCT.createId();
         this.simCard = simCard;
         this.sms = sms;
@@ -34,10 +36,13 @@ public class Product {
         this.toDate = toDate;
         this.price = (simCard.getCredits() + sms.getFullPrice() + voice.getFullPrice() + data.getFullPrice());
         this.productName = productName;
+        this.contractType = contractType;
     }
 
-    public Product(String id, SimCard simCard, SMS sms, Voice voice, Data data,
-                   LocalDate fromDate, LocalDate toDate, Integer price, String productName) {
+    public Product(String id, SimCard simCard, SMS sms,
+                   Voice voice, Data data, LocalDate fromDate,
+                   LocalDate toDate, Integer price, String productName,
+                   ContractType contractType) {
         this.id = id;
         this.simCard = simCard;
         this.sms = sms;
@@ -47,6 +52,7 @@ public class Product {
         this.toDate = toDate;
         this.price = price;
         this.productName = productName;
+        this.contractType = contractType;
     }
 
 }

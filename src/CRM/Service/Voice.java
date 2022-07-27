@@ -7,9 +7,9 @@ import lombok.ToString;
 public class Voice implements ServiceType {
     private final Integer price = 10; // cents
     private final Integer fullPrice;
-    private int minutes;
+    private Integer minutes;
 
-    public Voice(int minutes) {
+    public Voice(Integer minutes) {
         this.minutes = minutes;
         this.fullPrice = minutes * price;
     }

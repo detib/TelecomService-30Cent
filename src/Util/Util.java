@@ -1,16 +1,13 @@
 package Util;
 
-import CRM.Contact;
-import CRM.Contract;
-import CRM.Customer;
+import CRM.*;
 import CRM.Enum.ContractType;
 import CRM.Enum.CustomerType;
 import CRM.Enum.Gender;
 import CRM.Enum.STATE;
 import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ContractException;
-import CRM.Service.Service;
-import CRM.Subscription;
+import CRM.Service.*;
 import Database.DatabaseConn;
 import lombok.Getter;
 
@@ -21,10 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Scanner;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 public class Util {
     public final static String phoneNumberRegex = "3834[4-6]\\d{6}";
@@ -120,7 +115,7 @@ public class Util {
                     phoneNumber = PhoneNumber.SIX;
                     return new Subscription(new Contact(ID.SUBSCRIPTION), phoneNumber);
                 }
-                default -> System.out.println("Choose from the following (044, 045, 046)");
+                default -> System.out.print("Choose from the following (044, 045, 046): ");
             }
         }
 
@@ -170,6 +165,91 @@ public class Util {
             throw new ContactException(e.getMessage());
         }
         return Optional.empty();
+    }
+
+    public static Product getProduct(Scanner sc) {
+        System.out.print("How many sim credits do you want: ");
+        Integer simCredits;
+        while (true) {
+            try {
+                simCredits = sc.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.print("Please enter a number: ");
+                sc.nextLine();
+            }
+        }
+        System.out.print("How many voice minutes do you want: ");
+        Integer voiceMinutes;
+        while (true) {
+            try {
+                voiceMinutes = sc.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.print("Please enter a number: ");
+                sc.nextLine();
+            }
+        }
+        System.out.print("How many data MB do you want: ");
+        Integer dataMB;
+        while (true) {
+            try {
+                dataMB = sc.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.print("Please enter a number: ");
+                sc.nextLine();
+            }
+        }
+        System.out.print("How many text messages do you want: ");
+        Integer textMessages;
+        while (true) {
+            try {
+                textMessages = sc.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.print("Please enter a number: ");
+                sc.nextLine();
+            }
+        }
+        System.out.print("What do you want to call this product? : ");
+        String productName = sc.nextLine();
+        System.out.print("What type of product do you want (PREPAID, POSTPAID): ");
+        ContractType productType;
+        while (true) {
+            try {
+                productType = ContractType.valueOf(sc.nextLine());
+                break;
+            } catch (IllegalArgumentException iae) {
+                System.out.println("Wrong Type... Please try again!");
+                System.out.print("What type of product do you want (PREPAID, POSTPAID): ");
+            }
+
+        }
+        LocalDate fromDate;
+        while (true) {
+            System.out.println("When do you want this product to start? (YYYY-MM-DD)");
+            try {
+                fromDate = LocalDate.parse(sc.nextLine());
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.print("Please enter a valid date(yyyy-mm-dd): ");
+            }
+        }
+        LocalDate toDate;
+        while (true) {
+            System.out.println("When do you want this product to end? (YYYY-MM-DD)");
+            try {
+                toDate = LocalDate.parse(sc.nextLine());
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.print("Please enter a valid date(yyyy-mm-dd): ");
+            }
+        }
+        return new Product(
+                new SimCard(simCredits), new SMS(textMessages),
+                new Voice(voiceMinutes), new Data(dataMB),
+                fromDate, toDate, productName, productType);
     }
 
 }
