@@ -37,6 +37,8 @@ public class Customer implements TelecomService<Contract>, ContactService {
     @ToString.Exclude
     private ArrayList<Contract> contracts;
 
+//    { this.contracts = findAll(); }
+
     public Customer(CustomerType customerType, Contact contact) {
         this.id = ID.CUSTOMER.createId();
         this.createdDate = LocalDate.now();
@@ -62,6 +64,12 @@ public class Customer implements TelecomService<Contract>, ContactService {
                     "INSERT INTO contract VALUES('%s', '%s', '%s','%s', '%s', '%s')",
                     object.getId(), object.getContractType(), object.getCreatedDate(),
                     object.getState(), this.id, object.getContact().getId()));
+            try {
+                object.createContact();
+            } catch (ContactException e) {
+                System.out.println("Customer: cannot add contact to contract: " + e.getMessage());
+            }
+            if(this.contracts == null) this.contracts = new ArrayList<>();
             return contracts.add(object);
         } catch (SQLException e) {
             throw new ContractException("Cannot add a contract to the database!");
@@ -75,7 +83,7 @@ public class Customer implements TelecomService<Contract>, ContactService {
             Util.updateContract(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
             return conn.createStatement().execute(String.format(
-                    "UPDATE contract SET state = '%s' WHERE CuId = '%s';"
+                    "UPDATE contract SET state = '%s' WHERE CoID = '%s';"
                     ,object.getState(), object.getId())) && contracts.add(object);
         } catch (SQLException e) {
             contracts.add(object);
@@ -90,6 +98,8 @@ public class Customer implements TelecomService<Contract>, ContactService {
 
     @Override
     public Optional<Contract> findById(String id) {
+        // @TODO recheck
+        this.contracts = findAll();
         for (Contract contract : contracts) {
             if (contract.getId().equals(id)) {
                 return Optional.of(contract);
@@ -118,7 +128,7 @@ public class Customer implements TelecomService<Contract>, ContactService {
                     Contract contract = new Contract(id, contractType, createdDate, state, contact);
                     allContracts.add(contract);
                 } else {
-                    throw new RuntimeException("Customer: contract not existing");
+                    throw new RuntimeException("Customer: contact not existing");
                 }
             }
             return allContracts;
@@ -134,22 +144,21 @@ public class Customer implements TelecomService<Contract>, ContactService {
     public void createContact() throws ContactException {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            if(this.customerType == CustomerType.BUSINESS) {
-                conn.createStatement().execute(
+            switch (this.customerType) {
+                case BUSINESS -> conn.createStatement().execute(
                         String.format(
                                 "INSERT INTO contact(CtId, IdType, CreatedDate, State, CustomerName)" +
                                         "VALUES('%s', '%s', '%s', '%s', '%s')",
                                 contact.getId(), contact.getIdType(),
                                 contact.getCreatedDate(), contact.getState(), contact.getCustomerName()
                         ));
-            } else if(this.customerType == CustomerType.INDIVIDUAL) {
-                conn.createStatement().execute(
+                case INDIVIDUAL -> conn.createStatement().execute(
                         String.format(
                                 "INSERT INTO contact(CtId, Name, LastName, Gender, Dob, IdType, CreatedDate, State) " +
                                         "VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                                 contact.getId(), contact.getName(), contact.getLastname(), contact.getGender(),
                                 contact.getDob(), contact.getIdType(), contact.getCreatedDate(), contact.getState()
-                                ));
+                        ));
             }
 
         } catch (SQLException e) {

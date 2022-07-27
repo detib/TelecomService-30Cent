@@ -121,39 +121,63 @@ public class CustomerManagement implements TelecomService<Customer> {
 //        } catch (CustumerException e) {
 //            System.out.printf("Cannot create a new customer: %s" , e.getMessage());
 //        }
-        System.out.print("Create customer[1], View Customers[2]: ");
-        String choice = sc.nextLine();
-        if(Objects.equals(choice, "1")) {
-            try {
-                cm.create(Util.createCustomer(sc));
-            } catch (CustumerException e) {
-                throw new RuntimeException(e);
-            }
-        } else if(Objects.equals(choice, "2")) {
-            if(cm.customers.size() != 0) {
-                cm.customers.forEach(System.out::println);
-                System.out.print("Enter a customer id: ");
-                Optional<Customer> cust;
-                if((cust = cm.findById(sc.nextLine())).isPresent()) {
-                    Customer customer = cust.get();
-                    System.out.print("How many contracts do you want to create: ");
-                    Integer contracts = Integer.parseInt(sc.nextLine());
 
-                    for (int i = 0; i < contracts; i++) {
-                        try {
-                            customer.create(Util.createContract(sc));
-                        } catch (ContractException e) {
-                            System.out.println("Could not create contract.");
-                        }
-                    }
-                    ArrayList<Contract> all = customer.findAll();
-                    all.forEach(System.out::println);
-                } else {
-                    System.out.println("Account does not exist!");
+        while(true) {
+            System.out.print("Exit[0], Create customer[1], View Customers[2]: ");
+            String choice = sc.nextLine();
+            if(choice.equals("1")) {
+                try {
+                    cm.create(Util.createCustomer(sc));
+                } catch (CustumerException e) {
+                    throw new RuntimeException(e);
                 }
-            } else {
-                System.out.println("No Customers available;");
-            }
+            } else if(Objects.equals(choice, "2")) {
+                if(cm.customers.size() != 0) {
+                    cm.customers.forEach(System.out::println);
+                    System.out.print("Enter a customer id: ");
+                    Optional<Customer> cust;
+                    if((cust = cm.findById(sc.nextLine())).isPresent()) {
+                        Customer customer = cust.get();
+                        System.out.print("Create Contracts[1], View Contracts[2]: ");
+                        choice = sc.nextLine();
+                        if(choice.equals("1")) {
+                            try {
+                                customer.create(Util.createContract(sc));
+                            } catch (ContractException e) {
+                                System.out.println("Could not create contract.");
+                            }
+                        } else if(choice.equals("2")) {
+                            ArrayList<Contract> contracts = customer.findAll();
+                            contracts.forEach(System.out::println);
+                            if(contracts.size() != 0){
+                                System.out.printf("Do you want to update a contract? [Y]: ");
+                                choice = sc.nextLine();
+                                if (choice.equalsIgnoreCase("y")) {
+                                    System.out.print("Write the contract id to update: ");
+                                    Optional<Contract> contractToUpdate = customer.findById(sc.nextLine());
+                                    contractToUpdate.ifPresent(customer::update);
+                                }
+                            } else System.out.println("No contracts available");
+                        }
+    //                    System.out.print("How many contracts do you want to create: ");
+    //                    Integer contracts = Integer.parseInt(sc.nextLine());
+    //
+    //                    for (int i = 0; i < contracts; i++) {
+    //                        try {
+    //                            customer.create(Util.createContract(sc));
+    //                        } catch (ContractException e) {
+    //                            System.out.println("Could not create contract.");
+    //                        }
+    //                    }
+    //                    ArrayList<Contract> all = customer.findAll();
+    //                    all.forEach(System.out::println);
+                    } else {
+                        System.out.println("Account does not exist!");
+                    }
+                } else {
+                    System.out.println("No Customers available!");
+                }
+            } else if(choice.equals("0")) break;
         }
     }
 }
