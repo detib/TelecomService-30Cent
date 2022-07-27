@@ -3,7 +3,6 @@ package CRM.Service;
 import lombok.Getter;
 @Getter
 public class SimCard implements ServiceType {
-    private final Integer price = 300; // 300 Cents
     private Integer credits; // cents
 
     public SimCard(Integer credits) {
