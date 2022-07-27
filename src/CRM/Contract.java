@@ -43,9 +43,9 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     @ToString.Exclude
     private ArrayList<Subscription> subscriptions;
 
-    {this.subscriptions = new ArrayList<>();}
+    {this.subscriptions = new ArrayList<>();} // runs before constructor to remove null pointer exception
 
-    public Contract(ContractType contractType, Contact contact) {
+    public Contract(ContractType contractType, Contact contact) { //  Constructor for Contract
         this.id = ID.CONTRACT.createId();
         this.contractType = contractType;
         this.createdDate = LocalDate.now();
@@ -53,7 +53,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         this.contact = contact;
     }
 
-    public Contract(String id, ContractType contractType, LocalDate createdDate, STATE state, Contact contact) {
+    public Contract(String id, ContractType contractType, LocalDate createdDate, STATE state, Contact contact) { // constructor database connection
         this.id = id;
         this.contractType = contractType;
         this.createdDate = createdDate;
@@ -62,7 +62,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     }
 
     @Override
-    public boolean create(Subscription object) throws SubscriptionException {
+    public boolean create(Subscription object) throws SubscriptionException { // create a contact for a subscription
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
@@ -71,12 +71,12 @@ public class Contract implements TelecomService<Subscription>, ContactService {
                     object.getContact().getId(), this.id));
             try {
                 object.createContact();
-                object.create(new Service(new SimCard(300)));
-                object.create(new Service(new Voice(60)));
+                object.create(new Service(new SimCard(300))); // create a sim card
+                object.create(new Service(new Voice(60))); // create a voice service
             } catch (ServiceException | ContactException e) {
                 throw new RuntimeException(e);
             }
-            if(subscriptions == null) this.subscriptions = new ArrayList<>();
+            if(subscriptions == null) this.subscriptions = new ArrayList<>(); // initialize subscriptions to remove null pointer exception
             return subscriptions.add(object);
         } catch (SQLException e) {
             throw new SubscriptionException("Cannot add a Subscription to the database!");
@@ -85,7 +85,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public boolean update(Subscription object) {
-        subscriptions.remove(object);
+        subscriptions.remove(object); // remove the old subscription from the list
         try {
             Util.updateSubscription(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
@@ -100,14 +100,14 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     }
 
     @Override
-    public boolean delete(Subscription object) {
+    public boolean delete(Subscription object) { // delete a subscription and its contact from the database
         ArrayList<Service> services = object.findAll();
         services.forEach(object::delete);
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            conn.createStatement().execute(String.format("DELETE FROM contact where CtId='%s'", object.getContact().getId()));
-            conn.createStatement().execute(String.format("DELETE FROM subscription where SuID='%s'", id));
-            subscriptions.remove(object);
+            conn.createStatement().execute(String.format("DELETE FROM contact where CtId='%s'", object.getContact().getId())); // delete the contact
+            conn.createStatement().execute(String.format("DELETE FROM subscription where SuID='%s'", id)); // delete the subscription
+            subscriptions.remove(object); // remove the subscription from the ArrayList
         } catch (SQLException sqle) {
             throw new RuntimeException("Failed to delete on Contract: " + sqle.getMessage());
         }
@@ -115,9 +115,9 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     }
 
     @Override
-    public Optional<Subscription> findById(String id) {
+    public Optional<Subscription> findById(String id) { // find a subscription by its id, can return null
         this.subscriptions = findAll();
-        for (Subscription subscription : subscriptions){
+        for (Subscription subscription : subscriptions){ // iterate through the subscriptions
             if (subscription.getId().equals(id)){
                 return Optional.of(subscription);
             }
@@ -126,7 +126,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     }
 
     @Override
-    public ArrayList<Subscription> findAll() {
+    public ArrayList<Subscription> findAll() { // find all subscriptions of a contract
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             ResultSet resultSetSubscriptions = conn.createStatement()
@@ -140,7 +140,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
                 STATE state = STATE.valueOf(resultSetSubscriptions.getString("state"));
                 Optional<Contact> optionalContact = Util.findContactById(resultSetSubscriptions.getString("contact"));
                 Contact contact;
-                if(optionalContact.isPresent()) {
+                if(optionalContact.isPresent()) { // if the contact is found, add it to the subscription
                     contact = optionalContact.get();
                     Subscription subscription = new Subscription(id, phoneNumber, createdDate, state, contact);
                     allSubscriptions.add(subscription);
@@ -158,7 +158,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     }
 
     @Override
-    public void createContact() throws ContactException {
+    public void createContact() throws ContactException { // create a contact for a subscription
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(

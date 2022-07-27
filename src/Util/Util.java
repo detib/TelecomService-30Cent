@@ -122,7 +122,7 @@ public class Util {
     }
 
     public static Subscription updateSubscription(Scanner sc, Subscription subscription){
-        System.out.printf("Your State is: %s", subscription.getState());
+        System.out.printf("Your State is: %s\n", subscription.getState());
         System.out.print("What do you want to change the State to (ACTIVE, DEACTIVE, INACTIVE) or 'Q' to exit");
         while(true){
             String updateChoice = sc.nextLine();

@@ -38,7 +38,7 @@ public class Telecom30Cent {
                             if ((cust = cm.findById(sc.nextLine())).isPresent()) {
                                 Customer customer = cust.get();
                                 System.out.println(customer);
-                                System.out.print("Create Contracts[1], View Contracts[2], Buy Product[3]: ");
+                                System.out.print("Create Contracts[1], View Contracts[2]: ");
                                 choice = sc.nextLine();
                                 if (choice.equals("1")) {
                                     try {
@@ -68,7 +68,7 @@ public class Telecom30Cent {
                                                     Contract contract = contractToView.get();
                                                     ArrayList<Subscription> subscriptions = contract.findAll();
                                                     subscriptions.forEach(System.out::println);
-                                                    System.out.print("Create Subscription[1], View Subscription[2], Delete Subscription[3]: ");
+                                                    System.out.print("Create Subscription[1], View Subscription[2], Delete Subscription[3], Update Subscription[4], Buy Product[5]: ");
                                                     choice = sc.nextLine();
                                                     if (choice.equals("1")) {
                                                         try {
@@ -124,6 +124,39 @@ public class Telecom30Cent {
                                                         } else {
                                                             System.out.println("Subscription not found.");
                                                         }
+                                                    } else if (choice.equals("4")) {
+                                                        System.out.print("Write the subscription id to update: ");
+                                                        choice = sc.nextLine();
+//                                                        Optional<Subscription> subscriptionToUpdate = contract.findById(sc.nextLine());
+//                                                        subscriptionToUpdate.ifPresent(contract::update);
+                                                        Optional<Subscription> optionalSubscription = contract.findById(choice);
+                                                        if(optionalSubscription.isPresent()) {
+                                                            Subscription subscription = optionalSubscription.get();
+                                                            contract.update(Util.updateSubscription(sc,subscription));
+                                                        } else {
+                                                            System.out.println("Subscription not found.");
+                                                        }
+                                                    } else if (choice.equals("5")) {
+                                                        ArrayList<Product> products = pm.findAll();
+                                                        products.forEach(System.out::println);
+                                                        if(products.size() != 0) {
+                                                            System.out.print("Select product to buy (ID): ");
+                                                            choice = sc.nextLine();
+                                                            Optional<Product> product = pm.findById(choice);
+                                                            if(product.isPresent()) {
+                                                                Product prod = product.get();
+                                                                if(customer.buyProduct(prod)) {
+                                                                    System.out.printf("Product %s bought!", prod);
+                                                                } else {
+                                                                    System.out.println("Not allowed to purchase this product!");
+                                                                }
+                                                            }
+                                                        } else {
+                                                            System.out.println("There are no available products.");
+                                                        }
+
+                                                    } else {
+                                                        System.out.println("Invalid choice.");
                                                     }
                                                 } else {
                                                     System.out.println("Could not find contract.");
@@ -136,27 +169,6 @@ public class Telecom30Cent {
                                     } else {
                                         System.out.println("No contracts found.");
                                     }
-                                } else if (choice.equals("3")) {
-                                    ArrayList<Product> products = pm.findAll();
-                                    products.forEach(System.out::println);
-                                    if(products.size() != 0) {
-                                        System.out.print("Select product to buy (ID): ");
-                                        choice = sc.nextLine();
-                                        Optional<Product> product = pm.findById(choice);
-                                        if(product.isPresent()) {
-                                            Product prod = product.get();
-                                            if(customer.buyProduct(prod)) {
-                                                System.out.printf("Product %s bought!", prod);
-                                            } else {
-                                                System.out.println("Not allowed to purchase this product!");
-                                            }
-                                        }
-                                    } else {
-                                        System.out.println("There are no available products.");
-                                    }
-
-                                } else {
-                                    System.out.println("Invalid choice.");
                                 }
                             } else {
                                 System.out.println("Could not find customer.");
