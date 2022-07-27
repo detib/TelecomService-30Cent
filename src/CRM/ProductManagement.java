@@ -53,6 +53,13 @@ public class ProductManagement implements TelecomService<Product> {
 
     @Override
     public boolean delete(Product object) {
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(String.format("UPDATE product set state='DEACTIVATE' where productID='%s'", object.getId()));
+            products.remove(object);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 
@@ -70,7 +77,7 @@ public class ProductManagement implements TelecomService<Product> {
     public ArrayList<Product> findAll() {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            ResultSet allProducts = conn.createStatement().executeQuery("select * from product");
+            ResultSet allProducts = conn.createStatement().executeQuery("select * from product where state != 'DEACTIVATE'");
             ArrayList<Product> tempProducts = new ArrayList<>();
             while(allProducts.next()) {
                 String id = allProducts.getString("productID");
