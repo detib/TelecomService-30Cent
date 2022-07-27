@@ -1,6 +1,9 @@
 package CRM.Service;
 
+import lombok.Getter;
+
 public class Data implements ServiceType {
+    @Getter
     private int kB;
 
     public Data(int kB) {
