@@ -93,6 +93,16 @@ public class Customer implements TelecomService<Contract>, ContactService {
 
     @Override
     public boolean delete(Contract object) {
+        ArrayList<Subscription> allSubscriptions = object.findAll();
+        allSubscriptions.forEach(object::delete);
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(String.format("DELETE FROM contact where CtId='%s'", object.getContact().getId()));
+            conn.createStatement().execute(String.format("DELETE FROM contract where CoID='%s'", object.getId()));
+            contracts.remove(object);
+        } catch (SQLException sqle) {
+            throw new RuntimeException("Failed to delete on Customer:" + sqle.getMessage());
+        }
         return false;
     }
 

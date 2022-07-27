@@ -70,6 +70,15 @@ public class CustomerManagement implements TelecomService<Customer> {
     // @TODO add delete function
     @Override
     public boolean delete(Customer object) {
+        ArrayList<Contract> allContracts = object.findAll();
+        allContracts.forEach(object::delete);
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(String.format("DELETE FROM contact where CtID='%s'", object.getContact().getId()));
+            conn.createStatement().execute(String.format("DELETE FROM customer where CuID='%s'", object.getId()));
+        } catch (SQLException sqle) {
+            throw new RuntimeException("Failed to delete on CustomerManagement: " + sqle.getMessage());
+        }
         return false;
     }
 
@@ -115,15 +124,6 @@ public class CustomerManagement implements TelecomService<Customer> {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         CustomerManagement cm = new CustomerManagement();
-//        cm.customers.forEach(System.out::println);
-//        System.out.print("Update Customer: ");
-//        Optional<Customer> cus_1000008 = cm.findById("CUS_1000008");
-//        try {
-//            cm.create(Util.createCustomer(sc));
-//        } catch (CustumerException e) {
-//            System.out.printf("Cannot create a new customer: %s" , e.getMessage());
-//        }
-
         loop: while(true) {
             System.out.print("Exit[0], Create customer[1], View Customers[2]: ");
             String choice = sc.nextLine();
@@ -191,6 +191,7 @@ public class CustomerManagement implements TelecomService<Customer> {
 //                                                            System.out.println(subscription);
                                                             ArrayList<Service> subscriptionAll = subscription.findAll();
                                                             subscriptionAll.forEach(System.out::println);
+                                                            //@TODO
                                                         }
                                                     }
                                                 } else {

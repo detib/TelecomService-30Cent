@@ -80,7 +80,16 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean delete(Service object) {
-        return false;
+//        if(object.getServiceType() instanceof SimCard) return false;
+//        if(object.getServiceType() instanceof Voice) return false;
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(String.format("DELETE FROM service where SeID='%s'", object.getId()));
+            services.remove(object);
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

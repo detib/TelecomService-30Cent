@@ -3,6 +3,7 @@ package CRM;
 import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
 import CRM.Exceptions.ContactException;
+import CRM.Exceptions.ContractException;
 import CRM.Exceptions.ServiceException;
 import CRM.Exceptions.SubscriptionException;
 import CRM.Service.Service;
@@ -20,6 +21,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Connection;
+import java.sql.DataTruncation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -98,6 +100,16 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public boolean delete(Subscription object) {
+        ArrayList<Service> services = object.findAll();
+        services.forEach(object::delete);
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(String.format("DELETE FROM contact where CtId='%s'", object.getContact().getId()));
+            conn.createStatement().execute(String.format("DELETE FROM subscription where SuID='%s'", id));
+            subscriptions.remove(object);
+        } catch (SQLException sqle) {
+            throw new RuntimeException("Failed to delete on Contract: " + sqle.getMessage());
+        }
         return false;
     }
 
