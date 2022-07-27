@@ -3,25 +3,29 @@ package CRM.Service;
 import lombok.Getter;
 
 public class Data implements ServiceType {
+    private final Integer price = 2; // cents
     @Getter
-    private int kB;
+    private final Integer fullPrice;
+    @Getter
+    private int mB;
 
-    public Data(int kB) {
-        this.kB = kB;
+    public Data(int mB) {
+        this.mB = mB;
+        this.fullPrice = mB * price;
     }
 
     @Override
     public void spendAmount(Integer amount) {
-        this.kB -= amount;
+        this.mB -= amount;
     }
 
     @Override
     public void addAmount(Integer amount) {
-        this.kB += amount;
+        this.mB += amount;
     }
 
     @Override
     public String getTypeAmount() {
-        return "DAT_" + getKB();
+        return "DAT_" + getMB();
     }
 }

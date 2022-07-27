@@ -2,12 +2,15 @@ package CRM.Service;
 
 import lombok.Getter;
 
-public class Voice implements ServiceType {
     @Getter
+public class Voice implements ServiceType {
+    private final Integer price = 10; // cents
+    private final Integer fullPrice;
     private int minutes;
 
     public Voice(int minutes) {
         this.minutes = minutes;
+        this.fullPrice = minutes * price;
     }
 
     @Override
