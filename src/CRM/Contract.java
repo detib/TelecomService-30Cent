@@ -41,6 +41,8 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     @ToString.Exclude
     private ArrayList<Subscription> subscriptions;
 
+    {this.subscriptions = new ArrayList<>();}
+
     public Contract(ContractType contractType, Contact contact) {
         this.id = ID.CONTRACT.createId();
         this.contractType = contractType;
@@ -66,9 +68,10 @@ public class Contract implements TelecomService<Subscription>, ContactService {
                     object.getId(), object.getPhoneNumber(), object.getCreatedDate(), object.getState(),
                     object.getContact().getId(), this.id));
             try {
+                object.createContact();
                 object.create(new Service(new SimCard(300)));
                 object.create(new Service(new Voice(60)));
-            } catch (ServiceException e) {
+            } catch (ServiceException | ContactException e) {
                 throw new RuntimeException(e);
             }
             if(subscriptions == null) this.subscriptions = new ArrayList<>();
@@ -147,10 +150,10 @@ public class Contract implements TelecomService<Subscription>, ContactService {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(
                     String.format(
-                            "INSERT INTO contact(CtID, IdType, CreatedDate, State, CustomerName) " +
-                                    "VALUES('%s', '%s', '%s', '%s', '%s')",
+                            "INSERT INTO contact(CtID, IdType, CreatedDate, State) " +
+                                    "VALUES('%s', '%s', '%s', '%s')",
                             contact.getId(), contact.getIdType(), contact.getCreatedDate(),
-                            contact.getState(), contact.getCustomerName()));
+                            contact.getState()));
         } catch (SQLException e) {
             throw new ContactException("Contract: Could not create contact: " + e.getMessage());
         }

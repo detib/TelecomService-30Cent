@@ -2,9 +2,10 @@ package CRM;
 
 import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
+import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ServiceException;
-import CRM.Service.Service;
-import CRM.Service.ServiceType;
+import CRM.Service.*;
+import Database.ContactService;
 import Database.DatabaseConn;
 import Database.TelecomService;
 import Util.ID;
@@ -14,17 +15,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Getter
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Subscription implements TelecomService<Service> {
+public class Subscription implements TelecomService<Service>, ContactService {
     private final String id;
     private final String phoneNumber;
     private final LocalDate createdDate;
@@ -55,8 +58,10 @@ public class Subscription implements TelecomService<Service> {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
-                    "INSERT INTO services VALUES('%s', '%s', '%s', '%s', '%s');",
-                    object.getId(), object.getServiceType(), object.getCreatedDate(), object.getState()));
+                    "INSERT INTO service VALUES('%s', '%s', '%s', '%s', '%s');",
+                    object.getId(), object.getServiceType().getTypeAmount(),
+                    object.getCreatedDate(), object.getState(), id));
+            if(services == null) this.services = new ArrayList<>();
             return services.add(object);
         } catch (SQLException e){
             throw new ServiceException("Cannot add a Service to the database!");
@@ -80,6 +85,7 @@ public class Subscription implements TelecomService<Service> {
 
     @Override
     public Optional<Service> findById(String id) {
+        this.services = findAll();
         for (Service service : services){
             if (service.getId().equals(id)){
                 return Optional.of(service);
@@ -90,13 +96,44 @@ public class Subscription implements TelecomService<Service> {
 
     @Override
     public ArrayList<Service> findAll() {
-//        try{
-//            Connection conn = DatabaseConn.getInstance().getConnection();
-//            return conn.createStatement().executeQuery("SELECT * FROM Service");
-//        } catch (SQLException e){
-//            throw new RuntimeException(e);
-//        }
-        return null;
+        try{
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            ResultSet servicesResultSet = conn.createStatement().executeQuery(
+                    String.format("SELECT * FROM SERVICE WHERE SuID='%s';", this.id));
+            ArrayList<Service> allServices = new ArrayList<>();
+            while (servicesResultSet.next()){
+                String id = servicesResultSet.getString("SeID");
+                String type = servicesResultSet.getString("serviceType");
+                LocalDate createdDate = LocalDate.parse(servicesResultSet.getString("createdDate"));
+                STATE state = STATE.valueOf(servicesResultSet.getString("state"));
+                String[] service = type.split("_");
+                switch (service[0]) {
+                    case "SIM" -> allServices.add(new Service(id, new SimCard(Integer.parseInt(service[1])), createdDate, state));
+                    case "VOI" -> allServices.add(new Service(id, new Voice(Integer.parseInt(service[1])), createdDate, state));
+                    case "DAT" -> allServices.add(new Service(id, new Data(Integer.parseInt(service[1])), createdDate, state));
+                    case "SMS" -> allServices.add(new Service(id, new SMS(Integer.parseInt(service[1])), createdDate, state));
+                }
+            }
+            return allServices;
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
+    public void createContact() throws ContactException {
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(
+                    String.format(
+                            "INSERT INTO contact(CtID, IdType, CreatedDate, State)" +
+                                    "VALUES('%s', '%s', '%s', '%s')",
+                                contact.getId(), contact.getIdType(),
+                                contact.getCreatedDate(), contact.getState()
+                            )
+            );
+        } catch (SQLException e) {
+            throw new ContactException("Subscription: Cannot create contact:  "+ e.getMessage());
+        }
+    }
 }

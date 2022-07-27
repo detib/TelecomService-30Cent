@@ -6,6 +6,8 @@ import CRM.Enum.STATE;
 import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ContractException;
 import CRM.Exceptions.CustumerException;
+import CRM.Exceptions.SubscriptionException;
+import CRM.Service.Service;
 import Database.ContactService;
 import Database.DatabaseConn;
 import Database.TelecomService;
@@ -122,7 +124,7 @@ public class CustomerManagement implements TelecomService<Customer> {
 //            System.out.printf("Cannot create a new customer: %s" , e.getMessage());
 //        }
 
-        while(true) {
+        loop: while(true) {
             System.out.print("Exit[0], Create customer[1], View Customers[2]: ");
             String choice = sc.nextLine();
             if(choice.equals("1")) {
@@ -134,50 +136,110 @@ public class CustomerManagement implements TelecomService<Customer> {
             } else if(Objects.equals(choice, "2")) {
                 if(cm.customers.size() != 0) {
                     cm.customers.forEach(System.out::println);
-                    System.out.print("Enter a customer id: ");
-                    Optional<Customer> cust;
-                    if((cust = cm.findById(sc.nextLine())).isPresent()) {
-                        Customer customer = cust.get();
-                        System.out.print("Create Contracts[1], View Contracts[2]: ");
-                        choice = sc.nextLine();
-                        if(choice.equals("1")) {
-                            try {
-                                customer.create(Util.createContract(sc));
-                            } catch (ContractException e) {
-                                System.out.println("Could not create contract.");
-                            }
-                        } else if(choice.equals("2")) {
-                            ArrayList<Contract> contracts = customer.findAll();
-                            contracts.forEach(System.out::println);
-                            if(contracts.size() != 0){
-                                System.out.printf("Do you want to update a contract? [Y]: ");
+                    System.out.println("Exit[0], View a specific customer [1], Delete a customer[2]: ");
+                    choice = sc.nextLine();
+                    switch (choice) {
+                        case "1" -> {
+                            System.out.print("Enter a customer id: ");
+                            Optional<Customer> cust;
+                            if ((cust = cm.findById(sc.nextLine())).isPresent()) {
+                                Customer customer = cust.get();
+                                System.out.println(customer);
+                                System.out.print("Create Contracts[1], View Contracts[2]: ");
                                 choice = sc.nextLine();
-                                if (choice.equalsIgnoreCase("y")) {
-                                    System.out.print("Write the contract id to update: ");
-                                    Optional<Contract> contractToUpdate = customer.findById(sc.nextLine());
-                                    contractToUpdate.ifPresent(customer::update);
+                                if (choice.equals("1")) {
+                                    try {
+                                        customer.create(Util.createContract(sc));
+                                    } catch (ContractException e) {
+                                        System.out.println("Could not create contract.");
+                                    }
+                                } else if (choice.equals("2")) {
+                                    ArrayList<Contract> contracts = customer.findAll();
+                                    contracts.forEach(System.out::println);
+                                    if (contracts.size() != 0) {
+                                        System.out.print("Exit[0], Update Contract[1], View Contract[2]: ");
+                                        choice = sc.nextLine();
+                                        switch (choice) {
+                                            case "0" -> {
+                                                break loop;
+                                            }
+                                            case "1" -> {
+                                                System.out.print("Write the contract id to update: ");
+                                                Optional<Contract> contractToUpdate = customer.findById(sc.nextLine());
+                                                contractToUpdate.ifPresent(customer::update);
+                                            }
+                                            case "2" -> {
+                                                System.out.print("Write the contract id to view: ");
+                                                Optional<Contract> contractToView = customer.findById(sc.nextLine());
+                                                if(contractToView.isPresent()) {
+                                                    Contract contract = contractToView.get();
+                                                    ArrayList<Subscription> subscriptions = contract.findAll();
+                                                    subscriptions.forEach(System.out::println);
+                                                    System.out.print("Create Subscription[1], View Subscription[2]: ");
+                                                    choice = sc.nextLine();
+                                                    if (choice.equals("1")) {
+                                                        try {
+                                                            contract.create(Util.getSubscription(sc));
+                                                        } catch (SubscriptionException e) {
+                                                            System.out.println("Could not create subscription.");
+                                                        }
+                                                    } else if (choice.equals("2")) {
+                                                        System.out.print("Write the subscription id to view: ");
+                                                        Optional<Subscription> subscriptionToView = contract.findById(sc.nextLine());
+                                                        if(subscriptionToView.isPresent()) {
+                                                            Subscription subscription = subscriptionToView.get();
+//                                                            System.out.println(subscription);
+                                                            ArrayList<Service> subscriptionAll = subscription.findAll();
+                                                            subscriptionAll.forEach(System.out::println);
+                                                        }
+                                                    }
+                                                } else {
+                                                    System.out.println("Could not find contract.");
+                                                }
+                                            }
+                                            default -> {
+                                                System.out.println("Invalid choice.");
+                                            }
+                                        }
+                                    } else {
+                                        System.out.println("No contracts found.");
+                                    }
+                                } else {
+                                    System.out.println("Invalid choice.");
                                 }
-                            } else System.out.println("No contracts available");
+                            } else {
+                                System.out.println("Could not find customer.");
+                            }
                         }
-    //                    System.out.print("How many contracts do you want to create: ");
-    //                    Integer contracts = Integer.parseInt(sc.nextLine());
-    //
-    //                    for (int i = 0; i < contracts; i++) {
-    //                        try {
-    //                            customer.create(Util.createContract(sc));
-    //                        } catch (ContractException e) {
-    //                            System.out.println("Could not create contract.");
-    //                        }
-    //                    }
-    //                    ArrayList<Contract> all = customer.findAll();
-    //                    all.forEach(System.out::println);
-                    } else {
-                        System.out.println("Account does not exist!");
+                        case "2" -> {
+                            System.out.print("Enter a customer id: ");
+                            Optional<Customer> cust;
+                            if ((cust = cm.findById(sc.nextLine())).isPresent()) {
+                                Customer customer = cust.get();
+                                System.out.print("Enter a contract id: ");
+                                Optional<Contract> contract = customer.findById(sc.nextLine());
+                                if(contract.isPresent()) {
+                                    customer.delete(contract.get());
+                                } else {
+                                    System.out.println("Could not find contract.");
+                                }
+                            } else {
+                                System.out.println("Could not find customer.");
+                            }
+//                            break;
+                        }
+                        default -> {
+                            System.out.println("Invalid choice.");
+                        }
                     }
                 } else {
-                    System.out.println("No Customers available!");
+                    System.out.println("No customers found.");
                 }
-            } else if(choice.equals("0")) break;
+            } else if(choice.equals("0")) {
+                break;
+            } else {
+                System.out.println("Invalid choice.");
+            }
         }
     }
 }

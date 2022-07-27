@@ -4,10 +4,12 @@ import CRM.Enum.STATE;
 import Util.ID;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
+@ToString(callSuper = false)
 public class Service {
     private final String id;
     private ServiceType serviceType;

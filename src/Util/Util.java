@@ -147,7 +147,7 @@ public class Util {
             Connection conn = DatabaseConn.getInstance().getConnection();
             ResultSet resultContact = conn.createStatement()
                     .executeQuery(String.format(
-                            "SELECT * FROM contact where CtID = '%s'", id));
+                            "SELECT * FROM contact where CtID='%s'", id));
             while(resultContact.next()) {
                 String ctID = resultContact.getString("CtID");
                 String name = resultContact.getString("Name");
