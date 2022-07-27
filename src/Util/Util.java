@@ -69,7 +69,7 @@ public class Util {
         return customer;
     }
 
-    public static Contract createContract(Scanner sc) { // Create Contract and Subscription
+    public static Contract createContract(Scanner sc) { // Create Contract
         System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
         ContractType contractType;
         while(true){

@@ -23,31 +23,31 @@ import java.util.Optional;
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Subscription implements TelecomService<Service>{
     private final String id;
-    @Setter
     private String phoneNumber;
     private ContractType contractType;
     private final LocalDate createdDate;
 
     @Setter
     private STATE state;
+    private Contact contact;
     @ToString.Exclude
     private ArrayList<Service> services;
 
-    public Subscription(ContractType contractType, String phoneNumber) {
+    public Subscription(ContractType contractType, Contact contact) {
         this.id = ID.SUBSCRIPTION.createId();
         this.contractType = contractType;
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
-        this.phoneNumber = phoneNumber;
+        this.contact = contact;
     }
 
     public Subscription(String id, ContractType contractType,
-                        LocalDate createdDate, STATE state, String phoneNumber) {
+                        LocalDate createdDate, STATE state, Contact contact) {
         this.id = id;
-        this.phoneNumber = phoneNumber;
         this.contractType = contractType;
         this.createdDate = createdDate;
         this.state = state;
+        this.contact = contact;
     }
 
     @Override

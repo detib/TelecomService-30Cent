@@ -17,11 +17,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Spliterator;
 
 @Getter
 @ToString(doNotUseGetters = true)
@@ -89,12 +91,44 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public Optional<Subscription> findById(String id) {
+        for (Subscription subscription : subscription){
+            if (subscription.getId().equals(id)){
+                return Optional.of(subscription);
+            }
+        }
         return Optional.empty();
     }
 
     @Override
     public ArrayList<Subscription> findAll() {
-        return null;
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            ResultSet resultSetSubscriptions = conn.createStatement()
+                    .executeQuery(String.format(
+                            "SELECT * FROM subscription where contractID='%s'", this.id));
+            ArrayList<Subscription> allSubscriptions = new ArrayList<>();
+            while (resultSetSubscriptions.next()) {
+                String id = resultSetSubscriptions.getString("SuID");
+                ContractType contractType = ContractType.valueOf(resultSetSubscriptions.getString("contractType"));
+                LocalDate createdDate = LocalDate.parse(resultSetSubscriptions.getString("createdDate"));
+                STATE state = STATE.valueOf(resultSetSubscriptions.getString("state"));
+                Optional<Contact> optionalContact = Util.findContactById(resultSetSubscriptions.getString("contact"));
+                Contact contact;
+                if(optionalContact.isPresent()) {
+                    contact = optionalContact.get();
+                    Subscription subscription = new Subscription(id, contractType, createdDate, state, contact);
+                    allSubscriptions.add(subscription);
+                } else {
+                    throw new RuntimeException("Customer: contract not existing");
+                }
+            }
+            return allSubscriptions;
+        } catch (SQLException sqle){
+            throw new RuntimeException(sqle);
+        } catch (ContactException cte){
+            System.out.println("Error on querying contact:" + cte.getMessage());
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -104,7 +138,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
             conn.createStatement().execute(
                     String.format(
                             "INSERT INTO contact(CtID, IdType, CreatedDate, State, CustomerName) " +
-                                    "VALUES('%s', '%s', '%s', '%s')",
+                                    "VALUES('%s', '%s', '%s', '%s', '%s')",
                             contact.getId(), contact.getIdType(), contact.getCreatedDate(),
                             contact.getState(), contact.getCustomerName()));
         } catch (SQLException e) {

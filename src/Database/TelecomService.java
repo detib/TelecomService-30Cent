@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public interface TelecomService<T> {
-    boolean create(T object) throws Exception, SubscriptionException;
+    boolean create(T object) throws Exception;
     boolean update(T object);
 
     boolean delete(T object);
