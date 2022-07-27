@@ -87,9 +87,10 @@ public class Util {
 
     public static Contract updateContract(Scanner sc, Contract contract) { // Update Contract
         System.out.printf("Currently your STATE is: %s", contract.getState());
-        System.out.print("What do you want to change the State to (PREPAID, POSTPAID): ");
+        System.out.print("What do you want to change the State to (PREPAID, POSTPAID) or 'Q' to exit: ");
         while (true) {
             String updateChoice = sc.nextLine().toUpperCase();
+            if(updateChoice.equalsIgnoreCase("q")) return contract;
             try {
                 contract.setState(STATE.valueOf(updateChoice));
                 break;

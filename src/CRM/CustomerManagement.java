@@ -34,7 +34,7 @@ public class CustomerManagement implements TelecomService<Customer> {
     public boolean create(Customer object) throws CustumerException {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            boolean success = conn.createStatement().execute(String.format(
+            conn.createStatement().execute(String.format(
                     "INSERT INTO customer VALUES('%s', '%s', '%s', '%s', '%s');"
                     ,object.getId(), object.getCreatedDate(), object.getState(), object.getCustomerType(), object.getContact().getId()));
             try {
@@ -58,13 +58,14 @@ public class CustomerManagement implements TelecomService<Customer> {
             Connection conn = DatabaseConn.getInstance().getConnection();
             return conn.createStatement().execute(String.format(
                     "UPDATE customer SET state = '%s' WHERE CuId = '%s';"
-                    ,object.getState(), object.getId()));
+                    ,object.getState(), object.getId())) && customers.add(object);
         } catch (SQLException e) {
             customers.add(object);
             throw new RuntimeException(e);
         }
     }
 
+    // @TODO add delete function
     @Override
     public boolean delete(Customer object) {
         return false;

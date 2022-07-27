@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Scanner;
 
 @Getter
 @ToString(doNotUseGetters = true)
@@ -57,20 +58,29 @@ public class Customer implements TelecomService<Contract>, ContactService {
     public boolean create(Contract object) throws ContractException {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            boolean success = conn.createStatement().execute(String.format(
+            conn.createStatement().execute(String.format(
                     "INSERT INTO contract VALUES('%s', '%s', '%s','%s', '%s', '%s')",
                     object.getId(), object.getContractType(), object.getCreatedDate(),
                     object.getState(), this.id, object.getContact().getId()));
-            if(success) return contracts.add(object); else return false;
+            return contracts.add(object);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-//            throw new ContractException("Cannot add a contract to the database!");
+            throw new ContractException("Cannot add a contract to the database!");
         }
     }
 
     @Override
     public boolean update(Contract object) {
-        return false;
+        contracts.remove(object);
+        try {
+            Util.updateContract(new Scanner(System.in), object);
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            return conn.createStatement().execute(String.format(
+                    "UPDATE contract SET state = '%s' WHERE CuId = '%s';"
+                    ,object.getState(), object.getId())) && contracts.add(object);
+        } catch (SQLException e) {
+            contracts.add(object);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -80,7 +90,12 @@ public class Customer implements TelecomService<Contract>, ContactService {
 
     @Override
     public Optional<Contract> findById(String id) {
-        return null;
+        for (Contract contract : contracts) {
+            if (contract.getId().equals(id)) {
+                return Optional.of(contract);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -95,13 +110,15 @@ public class Customer implements TelecomService<Contract>, ContactService {
                 String id = resultSetContracts.getString("CoId");
                 ContractType contractType = ContractType.valueOf(resultSetContracts.getString("contractType"));
                 LocalDate createdDate = LocalDate.parse(resultSetContracts.getString("createdDate"));
-                STATE customerType = STATE.valueOf(resultSetContracts.getString("state"));
+                STATE state = STATE.valueOf(resultSetContracts.getString("state"));
                 Optional<Contact> optionalContact = Util.findContactById(resultSetContracts.getString("contact"));
                 Contact contact;
                 if(optionalContact.isPresent()) {
                     contact = optionalContact.get();
                     Contract contract = new Contract(id, contractType, createdDate, state, contact);
                     allContracts.add(contract);
+                } else {
+                    throw new RuntimeException("Customer: contract not existing");
                 }
             }
             return allContracts;
@@ -138,9 +155,5 @@ public class Customer implements TelecomService<Contract>, ContactService {
         } catch (SQLException e) {
             throw new ContactException("Customer: Could not create contact: " + e.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 }
