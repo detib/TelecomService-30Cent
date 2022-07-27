@@ -19,4 +19,9 @@ public class SimCard implements ServiceType {
     public void addAmount(Integer amount) {
         this.credits += amount;
     }
+
+    @Override
+    public String getTypeAmount() {
+        return "SIM_" + getCredits();
+    }
 }

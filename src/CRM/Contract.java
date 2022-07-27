@@ -66,8 +66,8 @@ public class Contract implements TelecomService<Subscription>, ContactService {
                     object.getId(), object.getPhoneNumber(), object.getCreatedDate(), object.getState(),
                     object.getContact().getId(), this.id));
             try {
-                object.create(new Service(new SimCard()));
-                object.create(new Service(new Voice()));
+                object.create(new Service(new SimCard(300)));
+                object.create(new Service(new Voice(60)));
             } catch (ServiceException e) {
                 throw new RuntimeException(e);
             }

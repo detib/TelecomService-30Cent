@@ -20,4 +20,9 @@ public class SMS implements ServiceType {
     public void addAmount(Integer amount) {
         this.messages += amount;
     }
+
+    @Override
+    public String getTypeAmount() {
+        return "SMS_" + getMessages();
+    }
 }

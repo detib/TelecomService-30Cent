@@ -19,4 +19,9 @@ public class Data implements ServiceType {
     public void addAmount(Integer amount) {
         this.kB += amount;
     }
+
+    @Override
+    public String getTypeAmount() {
+        return "DAT_" + getKB();
+    }
 }

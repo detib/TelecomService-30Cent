@@ -19,4 +19,9 @@ public class Voice implements ServiceType {
     public void addAmount(Integer amount) {
         this.minutes += amount;
     }
+
+    @Override
+    public String getTypeAmount() {
+        return "VOI_" + getMinutes();
+    }
 }
