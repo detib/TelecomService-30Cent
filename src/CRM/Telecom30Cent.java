@@ -1,5 +1,6 @@
 package CRM;
 
+import CRM.Enum.STATE;
 import CRM.Exceptions.*;
 import CRM.Service.Service;
 import CRM.Service.SimCard;
@@ -28,8 +29,10 @@ public class Telecom30Cent {
 
             } else if(Objects.equals(choice, "2")) {
                 if(cm.getCustomers().size() != 0) {
+                    System.out.println("Customers:");
                     cm.getCustomers().forEach(System.out::println);
-                    System.out.println("Exit[0], View a specific customer [1], Delete a customer[2]: ");
+                    System.out.println("_________________________________________________");
+                    System.out.print("Exit[0], View a specific customer [1], Delete a customer[2]: ");
                     choice = sc.nextLine();
                     switch (choice) {
                         case "1" -> {
@@ -54,17 +57,30 @@ public class Telecom30Cent {
                                         choice = sc.nextLine();
                                         switch (choice) {
                                             case "0" -> {
-                                                break loop;
+                                                break;
                                             }
                                             case "1" -> {
                                                 System.out.print("Write the contract id to update: ");
                                                 Optional<Contract> contractToUpdate = customer.findById(sc.nextLine());
-                                                contractToUpdate.ifPresent(customer::update);
+                                                if (contractToUpdate.isPresent()) {
+                                                    Contract contract = contractToUpdate.get();
+                                                    System.out.println(contract);
+                                                    System.out.print("Change the state (ACTIVE, DEACTIVE, INACTIVE): ");
+                                                    String state = sc.nextLine();
+                                                    if (state.equals("ACTIVE") || state.equals("DEACTIVE") || state.equals("INACTIVE")) {
+                                                        contract.setState(STATE.valueOf(state));
+                                                        customer.update(contract);
+                                                    } else {
+                                                        System.out.println("Invalid state.");
+                                                    }
+                                                } else {
+                                                    System.out.println("Could not find contract.");
+                                                }
                                             }
                                             case "2" -> {
                                                 System.out.print("Write the contract id to view: ");
                                                 Optional<Contract> contractToView = customer.findById(sc.nextLine());
-                                                if(contractToView.isPresent()) {
+                                                if(contractToView.isPresent() && contractToView.get().getState().equals(STATE.ACTIVE)) {
                                                     Contract contract = contractToView.get();
                                                     ArrayList<Subscription> subscriptions = contract.findAll();
                                                     subscriptions.forEach(System.out::println);
@@ -166,7 +182,7 @@ public class Telecom30Cent {
                                                         System.out.println("Invalid choice.");
                                                     }
                                                 } else {
-                                                    System.out.println("Could not find contract.");
+                                                    System.out.println("Could not find contract or it is not active.");
                                                 }
                                             }
                                             default -> {
@@ -177,26 +193,27 @@ public class Telecom30Cent {
                                         System.out.println("No contracts found.");
                                     }
                                 }
-                            } else {
+                            } else { // view 1 customer
                                 System.out.println("Could not find customer.");
                             }
                         }
                         case "2" -> {
-                            System.out.print("Enter a customer id: ");
+                            //delete customer
+                            System.out.print("Exit[0]: Enter a customer id: ");
+                            String customerId = sc.nextLine();
+                            if(customerId.equals("0")) {
+                                break;
+                            }
                             Optional<Customer> cust;
-                            if ((cust = cm.findById(sc.nextLine())).isPresent()) {
+                            if ((cust = cm.findById(customerId)).isPresent()) {
                                 Customer customer = cust.get();
-                                System.out.print("Enter a contract id: ");
-                                Optional<Contract> contract = customer.findById(sc.nextLine());
-                                if(contract.isPresent()) {
-                                    customer.delete(contract.get());
-                                } else {
-                                    System.out.println("Could not find contract.");
-                                }
+                                cm.delete(customer);
                             } else {
                                 System.out.println("Could not find customer.");
                             }
-//                            break;
+                        }
+                        case "0" -> {
+                            break;
                         }
                         default -> {
                             System.out.println("Invalid choice.");

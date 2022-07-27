@@ -49,15 +49,24 @@ public class Util {
             Gender gender;
             while(true){
                 try {
-                    gender = Gender.valueOf(sc.nextLine());
+                    gender = Gender.valueOf(sc.nextLine().toUpperCase());
+                    break;
                 } catch (IllegalArgumentException iae) {
-
+                    System.out.print("Wrong gender format! (M, F): ");
                 }
             }
             System.out.print("Date of Birth: ");
-            String dob = sc.nextLine();
+            LocalDate dob;
+            while(true) {
+                try {
+                    dob = LocalDate.parse(sc.nextLine());
+                    break;
+                } catch (DateTimeParseException e) {
+                    System.out.print("Wrong date format! (YYYY-MM-DD): ");
+                }
+            }
 
-            Contact contact = new Contact(ID.CUSTOMER, name, lastname, Gender.valueOf(gender), LocalDate.parse(dob));
+            Contact contact = new Contact(ID.CUSTOMER, name, lastname, gender, dob);
             return new Customer(CustomerType.INDIVIDUAL, contact);
         }
         return null;
