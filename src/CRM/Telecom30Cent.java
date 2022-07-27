@@ -87,13 +87,16 @@ public class Telecom30Cent {
                                                             subscriptionAll.forEach(System.out::println);
 
                                                             System.out.print("Create Service[1], View Service[2], Delete Service[3]");
-                                                            if (sc.nextLine() == "1"){
+                                                            choice = sc.nextLine();
+                                                            if (Objects.equals(choice, "1")){
                                                                 try {
                                                                     subscription.create(Util.createService(sc));
                                                                 } catch (ServiceException e){
                                                                     System.out.println("Could not create Service!");
                                                                 }
-                                                            } else if (sc.nextLine() == "3"){
+                                                            } else if (choice.equals("2")) {
+                                                                subscriptionAll.forEach(System.out::println);
+                                                            } else if (choice.equals("3")){
                                                                 System.out.print("Write the service ID to delete: ");
                                                                 if (subscriptionAll.size() != 0) {
                                                                     Optional<Service> optionalService = subscription.findById(sc.nextLine());
