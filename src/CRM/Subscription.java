@@ -2,6 +2,7 @@ package CRM;
 
 import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
+import CRM.Enum.ServiceEnum;
 import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ServiceException;
 import CRM.Service.*;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Getter
@@ -72,6 +74,9 @@ public class Subscription implements TelecomService<Service>, ContactService {
     public boolean update(Service object) {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
+            conn.createStatement().execute(String.format(
+                    "UPDATE service SET serviceType = '%s' WHERE SeID = '%s';",
+                    object.getServiceType().getTypeAmount() , object.getId()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -81,8 +86,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
     @Override
     public boolean delete(Service object) {
         this.services = findAll();
-//        if(object.getServiceType() instanceof SimCard) return false;
-//        if(object.getServiceType() instanceof Voice) return false;
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM service where SeID='%s'", object.getId()));
@@ -145,5 +148,62 @@ public class Subscription implements TelecomService<Service>, ContactService {
         } catch (SQLException e) {
             throw new ContactException("Subscription: Cannot create contact:  "+ e.getMessage());
         }
+    }
+
+    private boolean checkIfItHasData() {
+        this.services = findAll();
+        for (Service service : services) {
+            if(service.getServiceType() instanceof Data) return true;
+        }
+        return false;
+    }
+
+    private boolean checkIFItHasSMS() {
+        this.services = findAll();
+        for (Service service : services) {
+            if(service.getServiceType() instanceof SMS) return true;
+        }
+        return false;
+    }
+
+    private HashSet<ServiceEnum> check(HashSet<ServiceEnum> set) {
+        if(checkIfItHasData()) set.add(ServiceEnum.DATA);
+        if(checkIFItHasSMS()) set.add(ServiceEnum.SMS);
+        return set;
+    }
+
+    private boolean checkServicesForProduct(Product prod) {
+        Integer mb = prod.getData().getMB();
+        Integer messages = prod.getSms().getMessages();
+        ArrayList<Service> services = findAll();
+        HashSet<ServiceEnum> set = new HashSet<>();
+        if(mb > 0) set.add(ServiceEnum.DATA);
+        if(messages > 0) set.add(ServiceEnum.SMS);
+        return check(new HashSet<>()).containsAll(set);
+    }
+
+    public boolean buyProduct(Product prod) {
+        if(checkServicesForProduct(prod)) {
+            for (Service service : services) {
+                if(service.getServiceType() instanceof Data) service.getServiceType().addAmount(prod.getData().getMB());
+                if(service.getServiceType() instanceof SMS) service.getServiceType().addAmount(prod.getSms().getMessages());
+                if(service.getServiceType() instanceof Voice) service.getServiceType().addAmount(prod.getVoice().getMinutes());
+                if(service.getServiceType() instanceof SimCard) service.getServiceType().addAmount(prod.getSimCard().getCredits());
+                update(service);
+            }
+            try {
+                Connection conn = DatabaseConn.getInstance().getConnection();
+                conn.createStatement().execute(
+                        String.format(
+                                "Insert into sales values('%s', '%s')",
+                                this.id, prod.getId()
+                        ));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            return true;
+        }
+        return false;
     }
 }

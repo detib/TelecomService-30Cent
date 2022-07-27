@@ -35,7 +35,7 @@ public class ProductManagement implements TelecomService<Product> {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(
                     String.format(
-                            "INSERT INTO product values('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                            "INSERT INTO product(productID, SimCard, SMS, Voice, Data, fromDate, toDate, price, productName, contractType) values('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                             object.getId(), object.getSimCard().getCredits(), object.getSms().getMessages(), object.getVoice().getMinutes(),
                             object.getData().getMB(), object.getFromDate(), object.getToDate(), object.getPrice(), object.getProductName(), object.getContractType()
                     ));

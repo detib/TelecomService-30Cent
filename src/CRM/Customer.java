@@ -177,33 +177,4 @@ public class Customer implements TelecomService<Contract>, ContactService {
             throw new ContactException("Customer: Could not create contact: " + e.getMessage());
         }
     }
-
-    private boolean checkServicesForProduct(Product prod) {
-        for (Contract contract : contracts) {
-            if(contract.getContractType() == prod.getContractType()) {
-                ArrayList<Subscription> subscriptions = contract.getSubscriptions();
-                for (Subscription sub : subscriptions) {
-                    ArrayList<Service> services = sub.getServices();
-                    for (Service service : services) {
-                        if(prod.getData().getMB() > 0) {
-                            if(!(service.getServiceType() instanceof Data)) return false;
-                        }
-                        if(prod.getSms().getMessages() > 0) {
-                            if(!(service.getServiceType() instanceof SMS)) return false;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean buyProduct(Product prod) {
-        Integer sim = prod.getSimCard().getCredits();
-        Integer voice = prod.getVoice().getMinutes();
-        Integer data = prod.getData().getMB();
-        Integer sms = prod.getSms().getMessages();
-
-        return false;
-    }
 }

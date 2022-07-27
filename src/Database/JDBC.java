@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class JDBC {
     public static void main(String[] args) throws SQLException {
 
-        Connection con =  DatabaseConn.getInstance().getConnection();
+        Connection con = DatabaseConn.getInstance().getConnection();
 
         ResultSet resultSet = con.createStatement().executeQuery("Show tables;");
 

@@ -26,7 +26,15 @@ public class Util {
 
     public static Customer createCustomer(Scanner sc) { // Create Customer and Contact
         System.out.print("What type of customer are you? (Individual, Business):");
-        CustomerType customerType = CustomerType.valueOf(sc.nextLine().toUpperCase());
+        CustomerType customerType;
+        while (true) {
+            try {
+                customerType = CustomerType.valueOf(sc.nextLine().toUpperCase());
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.print("Invalid input. (INDIVIDUAL, BUSINESS): ");
+            }
+        }
         if(customerType == CustomerType.BUSINESS) {
             System.out.print("What is your Customer Name: ");
             String customerName = sc.nextLine();
@@ -38,7 +46,14 @@ public class Util {
             System.out.print("Lastname: ");
             String lastname = sc.nextLine();
             System.out.print("Gender: ");
-            String gender = sc.nextLine();
+            Gender gender;
+            while(true){
+                try {
+                    gender = Gender.valueOf(sc.nextLine());
+                } catch (IllegalArgumentException iae) {
+
+                }
+            }
             System.out.print("Date of Birth: ");
             String dob = sc.nextLine();
 
@@ -186,6 +201,7 @@ public class Util {
                     System.out.println("Please enter a number: ");
                     sc.nextInt();
                 }
+                sc.nextLine();
             }
             return new Service(new Data(data));
         } else if (Objects.equals(choice, "2")) {

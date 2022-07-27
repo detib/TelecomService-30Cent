@@ -137,22 +137,29 @@ public class Telecom30Cent {
                                                             System.out.println("Subscription not found.");
                                                         }
                                                     } else if (choice.equals("5")) {
-                                                        ArrayList<Product> products = pm.findAll();
-                                                        products.forEach(System.out::println);
-                                                        if(products.size() != 0) {
-                                                            System.out.print("Select product to buy (ID): ");
-                                                            choice = sc.nextLine();
-                                                            Optional<Product> product = pm.findById(choice);
-                                                            if(product.isPresent()) {
-                                                                Product prod = product.get();
-                                                                if(customer.buyProduct(prod)) {
-                                                                    System.out.printf("Product %s bought!", prod);
-                                                                } else {
-                                                                    System.out.println("Not allowed to purchase this product!");
+                                                        System.out.print("Write the subscription id to buy: ");
+                                                        Optional<Subscription> subscriptionToBuy = contract.findById(sc.nextLine());
+                                                        if(subscriptionToBuy.isPresent()) {
+                                                            Subscription subscription = subscriptionToBuy.get();
+                                                            ArrayList<Product> products = pm.findAll();
+                                                            products.forEach(System.out::println);
+                                                            if(products.size() != 0) {
+                                                                System.out.print("Select product to buy (ID): ");
+                                                                choice = sc.nextLine();
+                                                                Optional<Product> product = pm.findById(choice);
+                                                                if(product.isPresent()) {
+                                                                    Product prod = product.get();
+                                                                    if(subscription.buyProduct(prod)) {
+                                                                        System.out.printf("Product %s bought!", prod);
+                                                                    } else {
+                                                                        System.out.println("Not allowed to purchase this product!");
+                                                                    }
                                                                 }
+                                                            } else {
+                                                                System.out.println("There are no available products.");
                                                             }
                                                         } else {
-                                                            System.out.println("There are no available products.");
+                                                            System.out.println("Subscription not found.");
                                                         }
 
                                                     } else {
