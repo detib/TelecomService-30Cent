@@ -80,6 +80,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean delete(Service object) {
+        this.services = findAll();
 //        if(object.getServiceType() instanceof SimCard) return false;
 //        if(object.getServiceType() instanceof Voice) return false;
         try {

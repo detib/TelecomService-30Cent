@@ -167,6 +167,44 @@ public class Util {
         return Optional.empty();
     }
 
+    public static Service createService(Scanner sc) {
+        System.out.print("What do you want to add (DATA[1], SMS[2]): ");
+        String choice;
+        while (true) {
+            choice = sc.nextLine();
+            if (Objects.equals(choice, "1") || Objects.equals(choice, "2")) break;
+            System.out.print("Enter one of the choices (DATA[1], SMS[2]): ");
+        }
+        if (Objects.equals(choice, "1")) {
+            System.out.print("How many MB do you want to add: ");
+            Integer data;
+            while (true) {
+                try {
+                    data = sc.nextInt();
+                    break;
+                } catch (InputMismatchException e) {
+                    System.out.println("Please enter a number: ");
+                    sc.nextInt();
+                }
+            }
+            return new Service(new Data(data));
+        } else if (Objects.equals(choice, "2")) {
+            System.out.print("How many SMS do you want to add: ");
+            Integer message;
+            while (true) {
+                try {
+                    message = sc.nextInt();
+                    break;
+                } catch (InputMismatchException e) {
+                    System.out.println("Please enter a number: ");
+                    sc.nextInt();
+                }
+            }
+            return new Service(new SMS(message));
+        }
+
+        return null;
+    }
     public static Product getProduct(Scanner sc) {
         System.out.print("How many sim credits do you want: ");
         Integer simCredits;
