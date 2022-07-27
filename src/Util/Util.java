@@ -91,7 +91,7 @@ public class Util {
                 contract.setState(STATE.valueOf(updateChoice));
                 break;
             } catch (IllegalArgumentException ex){
-                System.out.println("State must be PREPAID/POSTPAID");
+                System.out.println("State must be (ACTIVE/DEACTIVE/INACTIVE)");
             }
         }
         return contract;
