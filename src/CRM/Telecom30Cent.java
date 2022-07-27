@@ -1,9 +1,6 @@
 package CRM;
 
-import CRM.Exceptions.ContractException;
-import CRM.Exceptions.CustumerException;
-import CRM.Exceptions.ServiceException;
-import CRM.Exceptions.SubscriptionException;
+import CRM.Exceptions.*;
 import CRM.Service.Service;
 import CRM.Service.SimCard;
 import CRM.Service.Voice;
@@ -18,6 +15,7 @@ public class Telecom30Cent {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         CustomerManagement cm = new CustomerManagement();
+        ProductManagement pm = new ProductManagement();
         loop: while(true) {
             System.out.print("Exit[0], Create customer[1], View Customers[2], View Products[3]: ");
             String choice = sc.nextLine();
@@ -27,6 +25,7 @@ public class Telecom30Cent {
                 } catch (CustumerException e) {
                     throw new RuntimeException(e);
                 }
+
             } else if(Objects.equals(choice, "2")) {
                 if(cm.getCustomers().size() != 0) {
                     cm.getCustomers().forEach(System.out::println);
@@ -39,7 +38,7 @@ public class Telecom30Cent {
                             if ((cust = cm.findById(sc.nextLine())).isPresent()) {
                                 Customer customer = cust.get();
                                 System.out.println(customer);
-                                System.out.print("Create Contracts[1], View Contracts[2]: ");
+                                System.out.print("Create Contracts[1], View Contracts[2], Buy Product[3]: ");
                                 choice = sc.nextLine();
                                 if (choice.equals("1")) {
                                     try {
@@ -113,7 +112,6 @@ public class Telecom30Cent {
                                                                 }
                                                             }
 
-
                                                             //@TODO
                                                         } else {
                                                             System.out.println("Subscription not found.");
@@ -138,6 +136,25 @@ public class Telecom30Cent {
                                     } else {
                                         System.out.println("No contracts found.");
                                     }
+                                } else if (choice.equals("3")) {
+                                    ArrayList<Product> products = pm.findAll();
+                                    products.forEach(System.out::println);
+                                    if(products.size() != 0) {
+                                        System.out.print("Select product to buy (ID): ");
+                                        choice = sc.nextLine();
+                                        Optional<Product> product = pm.findById(choice);
+                                        if(product.isPresent()) {
+                                            Product prod = product.get();
+                                            if(customer.buyProduct(prod)) {
+                                                System.out.printf("Product %s bought!", prod);
+                                            } else {
+                                                System.out.println("Not allowed to purchase this product!");
+                                            }
+                                        }
+                                    } else {
+                                        System.out.println("There are no available products.");
+                                    }
+
                                 } else {
                                     System.out.println("Invalid choice.");
                                 }
@@ -169,10 +186,31 @@ public class Telecom30Cent {
                 } else {
                     System.out.println("No customers found.");
                 }
-            } else if(choice.equals("0")) {
-                break;
-            }else if (choice.equals("3")){
+            } else if (choice.equals("3")){
+                System.out.println("Products: ");
+                pm.getProducts().forEach(System.out::println);
+                System.out.print("Create[1] or Delete[2] a product: ");
+                choice = sc.nextLine();
 
+                if (choice.equals("1")){
+                    try {
+                        pm.create(Util.getProduct(sc));
+                    } catch (ProductException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (choice.equals("2")){
+                    System.out.print("Enter the product ID you want to delete");
+                    String id = sc.nextLine();
+                    Optional<Product> prod;
+                    if ((prod = pm.findById(id)).isPresent()) {
+                        pm.delete(prod.get());
+                    } else {
+                        System.out.println("No product with that ID found!");
+                    }
+                }
+
+            } else if (choice.equals("0")){
+                break;
             }
 
             else {

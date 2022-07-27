@@ -77,7 +77,7 @@ public class ProductManagement implements TelecomService<Product> {
     public ArrayList<Product> findAll() {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            ResultSet allProducts = conn.createStatement().executeQuery("select * from product where state != 'DEACTIVATE'");
+            ResultSet allProducts = conn.createStatement().executeQuery("select * from product where state != 'DEACTIVATE' and toDate > cast(now() as date)");
             ArrayList<Product> tempProducts = new ArrayList<>();
             while(allProducts.next()) {
                 String id = allProducts.getString("productID");
