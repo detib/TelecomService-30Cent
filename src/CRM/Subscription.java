@@ -2,10 +2,13 @@ package CRM;
 
 import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
+import CRM.Exceptions.ServiceException;
 import CRM.Service.Service;
+import CRM.Service.ServiceType;
 import Database.DatabaseConn;
 import Database.TelecomService;
 import Util.ID;
+import Util.PhoneNumber;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,45 +24,42 @@ import java.util.Optional;
 @Getter
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Subscription implements TelecomService<Service>{
+public class Subscription implements TelecomService<Service> {
     private final String id;
-    private String phoneNumber;
-    private ContractType contractType;
+    private final String phoneNumber;
     private final LocalDate createdDate;
-
     @Setter
     private STATE state;
     private Contact contact;
     @ToString.Exclude
     private ArrayList<Service> services;
 
-    public Subscription(ContractType contractType, Contact contact) {
+    public Subscription(Contact contact, PhoneNumber phoneNumber) {
         this.id = ID.SUBSCRIPTION.createId();
-        this.contractType = contractType;
+        this.phoneNumber = phoneNumber.generateNumber();
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
         this.contact = contact;
     }
 
-    public Subscription(String id, ContractType contractType,
-                        LocalDate createdDate, STATE state, Contact contact) {
+    public Subscription(String id,String phoneNumber, LocalDate createdDate, STATE state, Contact contact) {
         this.id = id;
-        this.contractType = contractType;
+        this.phoneNumber = phoneNumber;
         this.createdDate = createdDate;
         this.state = state;
         this.contact = contact;
     }
 
     @Override
-    public boolean create(Service object) throws Exception {
-        try{
+    public boolean create(Service object) throws ServiceException {
+        try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            boolean success = conn.createStatement().execute(String.format(
+            conn.createStatement().execute(String.format(
                     "INSERT INTO services VALUES('%s', '%s', '%s', '%s', '%s');",
                     object.getId(), object.getServiceType(), object.getCreatedDate(), object.getState()));
-            if (success) return services.add(object); else return false;
+            return services.add(object);
         } catch (SQLException e){
-            throw new SQLException("Cannot add a Service to the database!");
+            throw new ServiceException("Cannot add a Service to the database!");
         }
     }
 
@@ -96,7 +96,7 @@ public class Subscription implements TelecomService<Service>{
 //        } catch (SQLException e){
 //            throw new RuntimeException(e);
 //        }
-    return null;
+        return null;
     }
 
 }

@@ -3,9 +3,12 @@ package CRM;
 import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
 import CRM.Exceptions.ContactException;
-import CRM.Exceptions.ContractException;
+import CRM.Exceptions.ServiceException;
 import CRM.Exceptions.SubscriptionException;
 import CRM.Service.Service;
+import CRM.Service.ServiceType;
+import CRM.Service.SimCard;
+import CRM.Service.Voice;
 import Database.ContactService;
 import Database.DatabaseConn;
 import Database.TelecomService;
@@ -23,12 +26,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.Spliterator;
 
 @Getter
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Contract implements TelecomService<Subscription>, ContactService {
+    @EqualsAndHashCode.Include
     private final String id;
     private ContractType contractType;
     private final LocalDate createdDate;
@@ -36,7 +39,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     private STATE state;
     private Contact contact;
     @ToString.Exclude
-    private ArrayList<Subscription> subscription;
+    private ArrayList<Subscription> subscriptions;
 
     public Contract(ContractType contractType, Contact contact) {
         this.id = ID.CONTRACT.createId();
@@ -59,11 +62,17 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
-                    "INSERT INTO Subscription VALUES('%s', '%s', '%s', " +
-                            "'%s', '%s', '%s')",
-                    object.getId(), object.getPhoneNumber(), object.getContractType(), object.getContractType(),
-                    object.getState(), this.id));
-            return subscription.add(object);
+                    "INSERT INTO Subscription VALUES('%s', '%s', '%s', '%s', '%s', '%s')",
+                    object.getId(), object.getPhoneNumber(), object.getCreatedDate(), object.getState(),
+                    object.getContact().getId(), this.id));
+            try {
+                object.create(new Service(new SimCard()));
+                object.create(new Service(new Voice()));
+            } catch (ServiceException e) {
+                throw new RuntimeException(e);
+            }
+            if(subscriptions == null) this.subscriptions = new ArrayList<>();
+            return subscriptions.add(object);
         } catch (SQLException e) {
             throw new SubscriptionException("Cannot add a Subscription to the database!");
         }
@@ -71,15 +80,15 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public boolean update(Subscription object) {
-        subscription.remove(object);
+        subscriptions.remove(object);
         try {
             Util.updateSubscription(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
             return conn.createStatement().execute(String.format(
                     "UPDATE Subscription SET state = '%s' WHERE SuID='%s';",
-                    object.getState(), object.getId())) && subscription.add(object);
+                    object.getState(), object.getId())) && subscriptions.add(object);
         } catch (SQLException e) {
-            subscription.add(object);
+            subscriptions.add(object);
             throw new RuntimeException(e);
         }
     }
@@ -91,7 +100,8 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public Optional<Subscription> findById(String id) {
-        for (Subscription subscription : subscription){
+        this.subscriptions = findAll();
+        for (Subscription subscription : subscriptions){
             if (subscription.getId().equals(id)){
                 return Optional.of(subscription);
             }
@@ -105,21 +115,21 @@ public class Contract implements TelecomService<Subscription>, ContactService {
             Connection conn = DatabaseConn.getInstance().getConnection();
             ResultSet resultSetSubscriptions = conn.createStatement()
                     .executeQuery(String.format(
-                            "SELECT * FROM subscription where contractID='%s'", this.id));
+                            "SELECT * FROM subscription where contractId='%s'", this.id));
             ArrayList<Subscription> allSubscriptions = new ArrayList<>();
             while (resultSetSubscriptions.next()) {
                 String id = resultSetSubscriptions.getString("SuID");
-                ContractType contractType = ContractType.valueOf(resultSetSubscriptions.getString("contractType"));
+                String phoneNumber = resultSetSubscriptions.getString("phoneNumber");
                 LocalDate createdDate = LocalDate.parse(resultSetSubscriptions.getString("createdDate"));
                 STATE state = STATE.valueOf(resultSetSubscriptions.getString("state"));
                 Optional<Contact> optionalContact = Util.findContactById(resultSetSubscriptions.getString("contact"));
                 Contact contact;
                 if(optionalContact.isPresent()) {
                     contact = optionalContact.get();
-                    Subscription subscription = new Subscription(id, contractType, createdDate, state, contact);
+                    Subscription subscription = new Subscription(id, phoneNumber, createdDate, state, contact);
                     allSubscriptions.add(subscription);
                 } else {
-                    throw new RuntimeException("Customer: contract not existing");
+                    throw new RuntimeException("Contract: contact not existing");
                 }
             }
             return allSubscriptions;

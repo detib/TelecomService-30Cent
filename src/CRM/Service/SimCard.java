@@ -1,4 +1,4 @@
 package CRM.Service;
 
-public class SimCard {
+public class SimCard implements ServiceType {
 }
