@@ -34,7 +34,9 @@ public class Customer implements TelecomService<Contract>, ContactService {
     @ToString.Exclude
     private ArrayList<Contract> contracts;
 
-//    { this.contracts = findAll(); }
+    {
+        this.contracts = findAll();
+    }
 
     public Customer(CustomerType customerType, Contact contact) {
         this.id = ID.CUSTOMER.createId();
@@ -105,7 +107,6 @@ public class Customer implements TelecomService<Contract>, ContactService {
      */
     @Override
     public boolean delete(Contract object) {
-        this.contracts = findAll();
         ArrayList<Subscription> allSubscriptions = object.findAll();
         allSubscriptions.forEach(object::delete);
         try {
@@ -127,7 +128,6 @@ public class Customer implements TelecomService<Contract>, ContactService {
     @Override
     public Optional<Contract> findById(String id) {
         // @TODO recheck
-        this.contracts = findAll();
         for (Contract contract : contracts) {
             if (contract.getId().equals(id)) {
                 return Optional.of(contract);

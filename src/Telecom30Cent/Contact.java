@@ -10,8 +10,8 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 
-@ToString(includeFieldNames = false)
 @Getter
+@ToString(includeFieldNames = false)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Contact {
     @EqualsAndHashCode.Include

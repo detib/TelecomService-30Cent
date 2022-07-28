@@ -37,6 +37,10 @@ public class Subscription implements TelecomService<Service>, ContactService {
     @ToString.Exclude
     private ArrayList<Service> services;
 
+    {
+        this.services = findAll();
+    }
+
     public Subscription(Contact contact, PhoneNumber phoneNumber) {
         this.id = ID.SUBSCRIPTION.createId();
         this.phoneNumber = phoneNumber.generateNumber();
@@ -55,7 +59,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean create(Service object) throws ServiceException, ServiceExistsException {
-        if(services == null) this.services = findAll();
         for (Service service : services) {
              if (service.getServiceType().equals(object.getServiceType())) {
                  throw new ServiceExistsException("Service already exists");
@@ -89,7 +92,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean delete(Service object) {
-        if(services == null) this.services = findAll();
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM service where SeID='%s'", object.getId()));
@@ -102,7 +104,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public Optional<Service> findById(String id) {
-        this.services = findAll();
         for (Service service : services){
             if (service.getId().equals(id)){
                 return Optional.of(service);

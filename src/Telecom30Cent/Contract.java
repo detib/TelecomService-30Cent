@@ -36,7 +36,9 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     @ToString.Exclude
     private ArrayList<Subscription> subscriptions;
 
-    {this.subscriptions = new ArrayList<>();} // runs before constructor to remove null pointer exception
+    {
+        this.subscriptions = new ArrayList<>();
+    } // runs before constructor to remove null pointer exception
 
     /**
      * Constructor for Contract
@@ -113,7 +115,6 @@ public class Contract implements TelecomService<Subscription>, ContactService {
             conn.createStatement().execute(String.format(
                     "UPDATE Subscription SET state = '%s' WHERE SuID='%s';",
                     object.getState(), object.getId()));
-            this.subscriptions = findAll();
             return true;
         } catch (SQLException e) {
             subscriptions.add(object);
@@ -130,8 +131,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
      */
     @Override
     public boolean delete(Subscription object) { // delete a subscription and its contact from the database
-        ArrayList<Service> services = object.findAll();
-        services.forEach(object::delete);
+        object.findAll().forEach(object::delete);
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM contact where CtId='%s'", object.getContact().getId())); // delete the contact
@@ -152,7 +152,6 @@ public class Contract implements TelecomService<Subscription>, ContactService {
      */
     @Override
     public Optional<Subscription> findById(String id) { // find a subscription by its id, can return null
-        this.subscriptions = findAll();
         for (Subscription subscription : subscriptions){ // iterate through the subscriptions
             if (subscription.getId().equals(id)){
                 return Optional.of(subscription);

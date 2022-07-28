@@ -85,10 +85,12 @@ public class Telecom30Cent {
                                                     Contract contract = contractToView.get();
                                                     ArrayList<Subscription> subscriptions = contract.findAll();
                                                     System.out.println("_________________________________________________");
-                                                    System.out.println("Subscriptions: ");
-                                                    subscriptions.forEach(System.out::println);
-                                                    System.out.println("_________________________________________________");
-                                                    System.out.print("Create Subscription[1], View Subscription[2], Delete Subscription[3], Update Subscription[4], Buy Product[5]: ");
+                                                    if(subscriptions.size() == 0){
+                                                        System.out.println("Subscriptions: ");
+                                                        subscriptions.forEach(System.out::println);
+                                                        System.out.println("_________________________________________________");
+                                                        System.out.print("Create Subscription[1], View Subscription[2], Delete Subscription[3], Update Subscription[4], Buy Product[5]: ");
+                                                    }
                                                     choice = sc.nextLine();
                                                     if (choice.equals("1") && contract.getState() == STATE.ACTIVE  && customer.getState() == STATE.ACTIVE) { // create subscription
                                                         try {
