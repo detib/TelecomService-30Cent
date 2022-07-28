@@ -42,7 +42,12 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     {this.subscriptions = new ArrayList<>();} // runs before constructor to remove null pointer exception
 
-    public Contract(ContractType contractType, Contact contact) { //  Constructor for Contract
+    /**
+     * Constructor for Contract
+     * @param contractType type of contract
+     * @param contact contact of contract
+     */
+    public Contract(ContractType contractType, Contact contact) {
         this.id = ID.CONTRACT.createId();
         this.contractType = contractType;
         this.createdDate = LocalDate.now();
@@ -50,7 +55,16 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         this.contact = contact;
     }
 
-    public Contract(String id, ContractType contractType, LocalDate createdDate, STATE state, Contact contact) { // constructor database connection
+    /**
+     * Constructor for database Contract
+     * @param id Contract id
+     * @param contractType Contract type
+     * @param createdDate Contract creation date
+     * @param state Contract state
+     * @param contact Contact object
+     */
+    public Contract(String id, ContractType contractType,
+                    LocalDate createdDate, STATE state, Contact contact) {
         this.id = id;
         this.contractType = contractType;
         this.createdDate = createdDate;
@@ -58,8 +72,17 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         this.contact = contact;
     }
 
+    /**
+     * This method Overrides the create method in TelecomService
+     * It adds a new subscription to the contract in the database
+     * It adds the subscription to the contract's subscriptions arraylist
+     * Also, it creates a contact, and a Service for the subscription
+     * @param object Subscription
+     * @return boolean true if a subscription is added successfully, false if not
+     * @throws SubscriptionException
+     */
     @Override
-    public boolean create(Subscription object) throws SubscriptionException { // create a contact for a subscription
+    public boolean create(Subscription object) throws SubscriptionException {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
@@ -80,6 +103,13 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         }
     }
 
+    /**
+     * This method Overrides the update method in TelecomService
+     * It updates a subscription in the database
+     * It updates the subscription in the contract's subscriptions arraylist
+     * @param object Subscription
+     * @return true if the subscription was updated, false otherwise
+     */
     @Override
     public boolean update(Subscription object) {
         try {
@@ -95,6 +125,13 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         }
     }
 
+    /**
+     * This method Overrides the delete method in TelecomService
+     * It deletes a subscription and its contact from the database
+     * It deletes the subscription from the contract's subscriptions arraylist
+     * @param object the subscription to be deleted
+     * @return true if the subscription was deleted, false otherwise
+     */
     @Override
     public boolean delete(Subscription object) { // delete a subscription and its contact from the database
         ArrayList<Service> services = object.findAll();
@@ -110,6 +147,12 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         return false;
     }
 
+    /**
+     * This method Overrides the findById method in TelecomService
+     * It is used to find the subscription with the given id
+     * @param id the id of the subscription to find
+     * @return the subscription with the given id
+     */
     @Override
     public Optional<Subscription> findById(String id) { // find a subscription by its id, can return null
         if(subscriptions == null) this.subscriptions = findAll();
@@ -121,8 +164,13 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         return Optional.empty();
     }
 
+    /**
+     * This method Overrides the findAll method in TelecomService
+     * It is used to find all the subscriptions of the contract from the database
+     * @return an ArrayList of all the subscriptions of the contract
+     */
     @Override
-    public ArrayList<Subscription> findAll() { // find all subscriptions of a contract
+    public ArrayList<Subscription> findAll() {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             ResultSet resultSetSubscriptions = conn.createStatement()
@@ -153,6 +201,11 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         return new ArrayList<>();
     }
 
+    /**
+     * This method Overrides the createContact method in ContactService
+     * It creates a contact in the database
+     * @throws ContactException if the contact already exists
+     */
     @Override
     public void createContact() throws ContactException { // create a contact for a subscription
         try {
