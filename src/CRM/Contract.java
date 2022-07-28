@@ -155,7 +155,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
      */
     @Override
     public Optional<Subscription> findById(String id) { // find a subscription by its id, can return null
-        if(subscriptions == null) this.subscriptions = findAll();
+        this.subscriptions = findAll();
         for (Subscription subscription : subscriptions){ // iterate through the subscriptions
             if (subscription.getId().equals(id)){
                 return Optional.of(subscription);

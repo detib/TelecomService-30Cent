@@ -105,7 +105,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public Optional<Service> findById(String id) {
-        if(services == null) this.services = findAll();
+        this.services = findAll();
         for (Service service : services){
             if (service.getId().equals(id)){
                 return Optional.of(service);

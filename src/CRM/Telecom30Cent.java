@@ -188,7 +188,7 @@ public class Telecom30Cent {
                                                                     if(contract.getContractType() != prod.getContractType()) {
                                                                         try {
                                                                             if (subscription.buyProduct(prod)) {
-                                                                                System.out.printf("Product %s bought!", prod);
+                                                                                System.out.printf("Product %s bought!\n", prod.getProductName());
                                                                             } else {
                                                                                 System.out.println("You do not have the services to buy this product!");
                                                                             }
