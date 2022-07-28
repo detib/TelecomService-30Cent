@@ -57,6 +57,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean create(Service object) throws ServiceException {
+
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(

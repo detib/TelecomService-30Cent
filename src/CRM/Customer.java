@@ -84,9 +84,10 @@ public class Customer implements TelecomService<Contract>, ContactService {
         try {
             Util.updateContract(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
-            return conn.createStatement().execute(String.format(
+            conn.createStatement().execute(String.format(
                     "UPDATE contract SET state = '%s' WHERE CoID = '%s';"
-                    ,object.getState(), object.getId())) && contracts.add(object);
+                    ,object.getState(), object.getId()));
+            return contracts.add(object);
         } catch (SQLException e) {
             contracts.add(object);
             throw new RuntimeException(e);

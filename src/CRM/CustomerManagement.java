@@ -58,18 +58,20 @@ public class CustomerManagement implements TelecomService<Customer> {
         try {
             Util.updateCustomer(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
-            return conn.createStatement().execute(String.format(
+            conn.createStatement().execute(String.format(
                     "UPDATE customer SET state = '%s' WHERE CuId = '%s';"
-                    , object.getState(), object.getId())) && customers.add(object);
+                    , object.getState(), object.getId()));
+            return customers.add(object);
         } catch (SQLException e) {
             customers.add(object);
             throw new RuntimeException(e);
         }
     }
 
-    // @TODO add delete function
     @Override
     public boolean delete(Customer object) {
+        customers = findAll();
+        customers.remove(object);
         ArrayList<Contract> allContracts = object.findAll();
         allContracts.forEach(object::delete);
         try {

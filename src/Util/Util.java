@@ -208,9 +208,8 @@ public class Util {
                     break;
                 } catch (InputMismatchException e) {
                     System.out.println("Please enter a number: ");
-                    sc.nextInt();
+                    sc.nextLine();
                 }
-                sc.nextLine();
             }
             return new Service(new Data(data));
         } else if (Objects.equals(choice, "2")) {
@@ -222,7 +221,7 @@ public class Util {
                     break;
                 } catch (InputMismatchException e) {
                     System.out.println("Please enter a number: ");
-                    sc.nextInt();
+                    sc.nextLine();
                 }
             }
             return new Service(new SMS(message));
