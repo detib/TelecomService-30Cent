@@ -10,7 +10,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 
-@ToString
+@ToString(includeFieldNames = false)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Contact {

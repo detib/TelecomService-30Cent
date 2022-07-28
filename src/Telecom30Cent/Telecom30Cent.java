@@ -274,16 +274,16 @@ public class Telecom30Cent {
                 pm.getProducts().forEach(System.out::println);
                 System.out.println("_________________________________________");
                 System.out.print("Exit[0], Create[1], Delete[2], View who purchased[3], Products cheaper than[4], Products by type[5], Products that will expire[6]: ");
-                choice = sc.nextLine();
+                String choiceprod = sc.nextLine();
                 while(true) {
-                    if (choice.equals("1")) {
+                    if (choiceprod.equals("1")) {
                         try {
                             pm.create(Util.getProduct(sc));
                             break;
                         } catch (ProductException e) {
                             throw new RuntimeException(e);
                         }
-                    } else if (choice.equals("2")) {
+                    } else if (choiceprod.equals("2")) {
                         System.out.print("Enter the product ID you want to delete");
                         String id = sc.nextLine();
                         Optional<Product> prod;
@@ -294,7 +294,7 @@ public class Telecom30Cent {
                             System.out.println("No product with that ID found!");
                         }
                         break;
-                    } else if(choice.equals("3")) {
+                    } else if(choiceprod.equals("3")) {
                         System.out.print("Type the product ID to view who purchased that product: ");
                         String id = sc.nextLine();
                         Optional<Product> prod;
@@ -308,12 +308,13 @@ public class Telecom30Cent {
                             System.out.println("No product with that ID found!");
                         }
                         break;
-                    } else if(choice.equals("4")) {
-                        System.out.print("Type the price to view all products cheaper than that (cents): ");
+                    } else if(choiceprod.equals("4")) {
+                        System.out.print("Type the price to view all products cheaper than that: ");
                         Integer price;
                         while (true) {
                             try {
                                 price = sc.nextInt();
+                                sc.nextLine();
                                 break;
                             } catch (InputMismatchException e) {
                                 System.out.println("Invalid price!");
@@ -326,16 +327,15 @@ public class Telecom30Cent {
                             System.out.println("No products found under that price.");
                         }
                         break;
-                    } else if(choice.equals("5")) {
-                        System.out.println("Type the type of product to view all products of that type(Prepaid, Postpaid): ");
+                    } else if(choiceprod.equals("5")) {
+                        System.out.print("Type the type of product to view all products of that type(Prepaid, Postpaid): ");
                         ContractType type;
                         while(true) {
                             try {
-                                type = ContractType.valueOf(sc.nextLine());
+                                type = ContractType.valueOf(sc.nextLine().toUpperCase());
                                 break;
                             } catch (IllegalArgumentException e) {
-                                System.out.println("Invalid type!");
-                                sc.nextLine();
+                                System.out.print("Invalid type! (Prepaid, Postpaid): ");
                             }
                         }
                         ArrayList<Product> productsByType = Util.findProductsByType(type, pm);
@@ -344,8 +344,8 @@ public class Telecom30Cent {
                             System.out.println("No products found with that type.");
                         }
                         break;
-                    } else if(choice.equals("6")) {
-                        System.out.println("Type the number of days to view all products that will expire in that number of days: ");
+                    } else if(choiceprod.equals("6")) {
+                        System.out.print("Type the number of days to view all products that will expire in that number of days: ");
                         while(true) {
                             try {
                                 Integer days = sc.nextInt();
@@ -354,15 +354,17 @@ public class Telecom30Cent {
                                 if(productsthatWillExpire.size() == 0) {
                                     System.out.println("No products found that will expire in that number of days.");
                                 }
+                                sc.nextLine();
                                 break;
                             } catch (InputMismatchException e) {
-                                System.out.print("Invalid number of days! Type again:");
+                                System.out.print("Invalid number of days! Type again: ");
                                 sc.nextLine();
                             }
+//                            sc.nextLine();
                         }
                         break;
                     }
-                    else if (choice.equals("0")) {
+                    else if (choiceprod.equals("0")) {
                         break;
                     }
                 }

@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.time.LocalDate;
 
 @Getter
-@ToString(callSuper = false)
+@ToString(callSuper = false, includeFieldNames = false)
 public class Service {
     private final String id;
     private ServiceType serviceType;

@@ -12,7 +12,7 @@ import lombok.ToString;
 import java.time.LocalDate;
 
 @Getter
-@ToString
+@ToString(includeFieldNames = false)
 public class Product {
     private final String id;
     private SimCard simCard;

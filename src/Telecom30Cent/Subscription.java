@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Getter
-@ToString(doNotUseGetters = true)
+@ToString(doNotUseGetters = true, includeFieldNames = true)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Subscription implements TelecomService<Service>, ContactService {
     private final String id;

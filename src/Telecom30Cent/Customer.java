@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Getter
-@ToString(doNotUseGetters = true)
+@ToString(doNotUseGetters = true, includeFieldNames = false)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 
 public class Customer implements TelecomService<Contract>, ContactService {
