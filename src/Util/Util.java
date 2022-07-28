@@ -24,7 +24,13 @@ import java.util.*;
 public class Util {
     public final static String phoneNumberRegex = "3834[4-6]\\d{6}";
 
-    public static Customer createCustomer(Scanner sc) { // Create Customer and Contact
+    /**
+     * Customer class constructor
+     * Checks if the customer is individual or business and creates the appropriate object
+     * @param sc Scanner object
+     * @return Customer object
+     */
+    public static Customer createCustomer(Scanner sc) {
         System.out.print("What type of customer are you? (Individual, Business):");
         CustomerType customerType;
         while (true) {
@@ -72,6 +78,12 @@ public class Util {
         return null;
     }
 
+    /**
+     * updateCustomer method updates the Customer state to Active, Deactive, or Inactive, based on the user input
+     * @param sc Scanner object
+     * @param customer Customer object
+     * @return Customer object
+     */
     public static Customer updateCustomer(Scanner sc, Customer customer) {
         System.out.printf("Currently your STATE is: %s\n", customer.getState());
         System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE) or 'Q' to exit: ");
@@ -89,6 +101,11 @@ public class Util {
         return customer;
     }
 
+    /**
+     * createContract method creates a Contract object based on the user input
+     * @param sc Scanner object
+     * @return Contract object
+     */
     public static Contract createContract(Scanner sc) { // Create Contract
         System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
         ContractType contractType;
@@ -105,6 +122,12 @@ public class Util {
         return new Contract(contractType, new Contact(ID.CONTRACT));
     }
 
+    /**
+     * updateContract method updates the Contract state to Active, Deactive, or Inactive, based on the user input
+     * @param sc Scanner object
+     * @param contract Contract object
+     * @return Contract object
+     */
     public static Contract updateContract(Scanner sc, Contract contract) { // Update Contract
         System.out.printf("Currently your STATE is: %s", contract.getState());
         System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE) or 'Q' to exit: ");
@@ -121,6 +144,11 @@ public class Util {
         return contract;
     }
 
+    /**
+     * getSubscription method creates a Subscription object based on the user input
+     * @param sc Scanner object
+     * @return Subscription object
+     */
     public static Subscription getSubscription(Scanner sc) {
         System.out.print("Which Phone Number option do you want (044, 045, 046): ");
         loop: while (true){
@@ -145,6 +173,12 @@ public class Util {
 
     }
 
+    /**
+     * updateSubscription method updates the Subscription state to Active, Deactive, or Inactive, based on the user input
+     * @param sc Scanner object
+     * @param subscription Subscription object
+     * @return Subscription object
+     */
     public static Subscription updateSubscription(Scanner sc, Subscription subscription){
         System.out.printf("Your State is: %s\n", subscription.getState());
         System.out.print("What do you want to change the State to (ACTIVE, DEACTIVE, INACTIVE) or 'Q' to exit");
@@ -161,6 +195,12 @@ public class Util {
         return subscription;
     }
 
+    /**
+     * findContactById method finds a Contact object based on the id
+     * @param id ID object
+     * @return Contact object
+     * @throws ContactException if the Contact is not found
+     */
     public static Optional<Contact> findContactById(String id) throws ContactException{
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
@@ -191,44 +231,30 @@ public class Util {
         return Optional.empty();
     }
 
+    /**
+     * createService method creates a Service object based on the user input
+     * @param sc Scanner object
+     * @return Service object
+     */
     public static Service createService(Scanner sc) {
         System.out.print("What do you want to add (DATA[1], SMS[2]): ");
-        String choice;
         while (true) {
-            choice = sc.nextLine();
-            if (Objects.equals(choice, "1") || Objects.equals(choice, "2")) break;
-            System.out.print("Enter one of the choices (DATA[1], SMS[2]): ");
-        }
-        if (Objects.equals(choice, "1")) {
-            System.out.print("How many MB do you want to add: ");
-            Integer data;
-            while (true) {
-                try {
-                    data = sc.nextInt();
-                    break;
-                } catch (InputMismatchException e) {
-                    System.out.println("Please enter a number: ");
-                    sc.nextLine();
-                }
+            String choice = sc.nextLine();
+            if (choice.equals("1")) {
+                return new Service(new Data(0));
+            } else if(choice.equals("2")) {
+                return new Service(new SMS(0));
+            } else {
+                System.out.print("Enter one of the choices (DATA[1], SMS[2]): ");
             }
-            return new Service(new Data(data));
-        } else if (Objects.equals(choice, "2")) {
-            System.out.print("How many SMS do you want to add: ");
-            Integer message;
-            while (true) {
-                try {
-                    message = sc.nextInt();
-                    break;
-                } catch (InputMismatchException e) {
-                    System.out.println("Please enter a number: ");
-                    sc.nextLine();
-                }
-            }
-            return new Service(new SMS(message));
         }
-
-        return null;
     }
+
+    /**
+     * getProduct method creates a Product object based on the user input
+     * @param sc Scanner object
+     * @return Product object
+     */
     public static Product getProduct(Scanner sc) {
         System.out.print("How many sim credits do you want: ");
         Integer simCredits;
