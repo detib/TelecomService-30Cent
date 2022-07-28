@@ -208,7 +208,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
                 }
                 return true;
             } catch (SQLException e) {
-                throw new ServiceException("Cannot add a product!");
+                throw new RuntimeException("Subscription: Cannot add a product!" + e.getMessage());
             }
         }
         return false;

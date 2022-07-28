@@ -100,6 +100,24 @@ public class ProductManagement implements TelecomService<Product> {
         }
     }
 
+    public ArrayList<Customer> findCustomersByProducts(Product prod, CustomerManagement cm) {
+        Product product = findById(prod.getId()).get();
+        try {
+            Connection conn = DatabaseConn.getInstance().getConnection();
+            ResultSet allCustomers = conn.createStatement().executeQuery(
+                    String.format(
+                            "select * from sales where productId = '%s'", product.getId()
+                    ));
+            ArrayList<Customer> tempCustomers = new ArrayList<>();
+            while(allCustomers.next()) {
+                String id = allCustomers.getString("subscriberId");
+                cm.findById(id).ifPresent(tempCustomers::add);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         ProductManagement pm = new ProductManagement();
         Scanner sc = new Scanner(System.in);
