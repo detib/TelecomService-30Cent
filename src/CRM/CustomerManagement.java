@@ -78,6 +78,11 @@ public class CustomerManagement implements TelecomService<Customer> {
         }
     }
 
+    /**
+     * delete a customer from the database
+     * @param object the customer to be deleted
+     * @return true if the customer was deleted successfully, false otherwise
+     */
     @Override
     public boolean delete(Customer object) {
         customers = findAll();
