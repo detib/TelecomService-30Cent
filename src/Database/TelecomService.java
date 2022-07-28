@@ -1,8 +1,5 @@
 package Database;
 
-import CRM.Exceptions.CustumerException;
-
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Optional;
 

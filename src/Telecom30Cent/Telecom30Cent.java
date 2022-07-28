@@ -1,14 +1,12 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.ContractType;
-import CRM.Enum.STATE;
-import CRM.Exceptions.*;
-import CRM.Service.Service;
-import CRM.Service.SimCard;
-import CRM.Service.Voice;
-import Database.TelecomService;
+import Telecom30Cent.Enum.ContractType;
+import Telecom30Cent.Enum.STATE;
+import Telecom30Cent.Exceptions.*;
+import Telecom30Cent.Service.Service;
+import Telecom30Cent.Service.SimCard;
+import Telecom30Cent.Service.Voice;
 import Util.Util;
-
 import java.util.*;
 
 public class Telecom30Cent {
@@ -160,8 +158,6 @@ public class Telecom30Cent {
                                                         // update subscription if contract and customer are active
                                                         System.out.print("Write the subscription id to update: ");
                                                         choice = sc.nextLine();
-//                                                        Optional<Subscription> subscriptionToUpdate = contract.findById(sc.nextLine());
-//                                                        subscriptionToUpdate.ifPresent(contract::update);
                                                         Optional<Subscription> optionalSubscription = contract.findById(choice);
                                                         if(optionalSubscription.isPresent()) {
                                                             Subscription subscription = optionalSubscription.get();
@@ -267,9 +263,7 @@ public class Telecom30Cent {
                                 System.out.println("Could not find customer.");
                             }
                         }
-                        case "0" -> {
-                            break;
-                        }
+                        case "0" -> {}
                     }
                 } else {
                     System.out.println("No customers found.");

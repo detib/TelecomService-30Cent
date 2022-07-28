@@ -1,11 +1,10 @@
-package CRM.Service;
+package Telecom30Cent.Service;
 
-import CRM.Enum.STATE;
+import Telecom30Cent.Enum.STATE;
 import Util.ID;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.time.LocalDate;
 
 @Getter

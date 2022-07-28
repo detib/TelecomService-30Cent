@@ -1,12 +1,12 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.STATE;
-import CRM.Enum.ServiceEnum;
-import CRM.Exceptions.ContactException;
-import CRM.Exceptions.ProductExpiredException;
-import CRM.Exceptions.ServiceException;
-import CRM.Exceptions.ServiceExistsException;
-import CRM.Service.*;
+import Telecom30Cent.Enum.STATE;
+import Telecom30Cent.Enum.ServiceEnum;
+import Telecom30Cent.Exceptions.ContactException;
+import Telecom30Cent.Exceptions.ProductExpiredException;
+import Telecom30Cent.Exceptions.ServiceException;
+import Telecom30Cent.Exceptions.ServiceExistsException;
+import Telecom30Cent.Service.*;
 import Database.ContactService;
 import Database.DatabaseConn;
 import Database.TelecomService;

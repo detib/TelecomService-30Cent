@@ -1,18 +1,14 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.ContractType;
-import CRM.Enum.CustomerType;
-import CRM.Exceptions.ProductException;
-import CRM.Service.Data;
-import CRM.Service.SMS;
-import CRM.Service.SimCard;
-import CRM.Service.Voice;
+import Telecom30Cent.Enum.ContractType;
+import Telecom30Cent.Exceptions.ProductException;
+import Telecom30Cent.Service.Data;
+import Telecom30Cent.Service.SMS;
+import Telecom30Cent.Service.SimCard;
+import Telecom30Cent.Service.Voice;
 import Database.DatabaseConn;
 import Database.TelecomService;
-import Util.Util;
 import lombok.Getter;
-
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +16,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
-import Util.ID;
 
 public class ProductManagement implements TelecomService<Product> {
 
@@ -127,18 +122,5 @@ public class ProductManagement implements TelecomService<Product> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) {
-        ProductManagement pm = new ProductManagement();
-        Scanner sc = new Scanner(System.in);
-//        for (int i = 0; i < 5; i++) {
-//            try {
-//                pm.create(Util.getProduct(sc));
-//            } catch (ProductException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-        pm.products.forEach(System.out::println);
     }
 }

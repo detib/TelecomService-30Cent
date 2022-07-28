@@ -1,7 +1,6 @@
-package CRM.Service;
+package Telecom30Cent.Service;
 
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 public class Voice implements ServiceType {

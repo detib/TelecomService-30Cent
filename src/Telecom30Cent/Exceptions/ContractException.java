@@ -1,4 +1,4 @@
-package CRM.Exceptions;
+package Telecom30Cent.Exceptions;
 
 public class ContractException extends Exception {
     public ContractException(String message) {

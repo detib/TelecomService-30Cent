@@ -1,6 +1,4 @@
-package CRM.Exceptions;
-
-import java.sql.SQLException;
+package Telecom30Cent.Exceptions;
 
 public class CustumerException extends Exception {
     public CustumerException(String message) {

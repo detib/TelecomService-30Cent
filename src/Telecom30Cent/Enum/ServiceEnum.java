@@ -1,4 +1,4 @@
-package CRM.Enum;
+package Telecom30Cent.Enum;
 
 public enum ServiceEnum {
     DATA,

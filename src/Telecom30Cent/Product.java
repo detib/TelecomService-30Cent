@@ -1,15 +1,14 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.ContractType;
-import CRM.Service.Data;
-import CRM.Service.SMS;
-import CRM.Service.SimCard;
-import CRM.Service.Voice;
+import Telecom30Cent.Enum.ContractType;
+import Telecom30Cent.Service.Data;
+import Telecom30Cent.Service.SMS;
+import Telecom30Cent.Service.SimCard;
+import Telecom30Cent.Service.Voice;
 import Util.ID;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.time.LocalDate;
 
 @Getter

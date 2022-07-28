@@ -1,12 +1,11 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.ContractType;
-import CRM.Enum.STATE;
-import CRM.Exceptions.*;
-import CRM.Service.Service;
-import CRM.Service.ServiceType;
-import CRM.Service.SimCard;
-import CRM.Service.Voice;
+import Telecom30Cent.Enum.ContractType;
+import Telecom30Cent.Enum.STATE;
+import Telecom30Cent.Exceptions.*;
+import Telecom30Cent.Service.Service;
+import Telecom30Cent.Service.SimCard;
+import Telecom30Cent.Service.Voice;
 import Database.ContactService;
 import Database.DatabaseConn;
 import Database.TelecomService;
@@ -16,15 +15,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.sql.Connection;
-import java.sql.DataTruncation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Scanner;
 
 @Getter
 @ToString(doNotUseGetters = true)

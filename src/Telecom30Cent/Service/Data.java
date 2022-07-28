@@ -1,4 +1,4 @@
-package CRM.Service;
+package Telecom30Cent.Service;
 
 import lombok.Getter;
 

@@ -1,27 +1,19 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.ContractType;
-import CRM.Enum.CustomerType;
-import CRM.Enum.STATE;
-import CRM.Exceptions.ContactException;
-import CRM.Exceptions.ContractException;
-import CRM.Exceptions.CustumerException;
-import CRM.Exceptions.SubscriptionException;
-import CRM.Service.Service;
-import Database.ContactService;
+import Telecom30Cent.Enum.CustomerType;
+import Telecom30Cent.Enum.STATE;
+import Telecom30Cent.Exceptions.ContactException;
+import Telecom30Cent.Exceptions.CustumerException;
 import Database.DatabaseConn;
 import Database.TelecomService;
 import Util.Util;
 import lombok.Getter;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Scanner;
 
 public class CustomerManagement implements TelecomService<Customer> {
 

@@ -1,28 +1,21 @@
 package Util;
 
-import CRM.*;
-import CRM.Enum.ContractType;
-import CRM.Enum.CustomerType;
-import CRM.Enum.Gender;
-import CRM.Enum.STATE;
-import CRM.Exceptions.ContactException;
-import CRM.Exceptions.ContractException;
-import CRM.Service.*;
+import Telecom30Cent.*;
+import Telecom30Cent.Enum.ContractType;
+import Telecom30Cent.Enum.CustomerType;
+import Telecom30Cent.Enum.Gender;
+import Telecom30Cent.Enum.STATE;
+import Telecom30Cent.Exceptions.ContactException;
+import Telecom30Cent.Service.*;
 import Database.DatabaseConn;
-import lombok.Getter;
-
-import java.lang.reflect.GenericSignatureFormatError;
-import java.nio.file.FileAlreadyExistsException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class Util {
-    public final static String phoneNumberRegex = "3834[4-6]\\d{6}";
 
     /**
      * Customer class constructor

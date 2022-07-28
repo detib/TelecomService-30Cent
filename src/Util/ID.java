@@ -12,10 +12,6 @@ public enum ID {
     CONTRACT("CRT"),
     SUBSCRIPTION("SUB"),
     SERVICE("SER"),
-    SIMCARD("SIM"),
-    SMS("SMS"),
-    DATA("DAT"),
-    VOICE("VCE"),
     PRODUCT("PRD");
 
     private final String prefix;

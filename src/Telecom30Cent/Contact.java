@@ -1,8 +1,7 @@
-package CRM;
+package Telecom30Cent;
 
-import CRM.Enum.Gender;
-import CRM.Enum.STATE;
-import Database.TelecomService;
+import Telecom30Cent.Enum.Gender;
+import Telecom30Cent.Enum.STATE;
 import Util.ID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
