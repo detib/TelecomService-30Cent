@@ -341,4 +341,27 @@ public class Util {
                 fromDate, toDate, productName, productType);
     }
 
+    public static void findProductsCheaperThan(Integer price, ProductManagement pm) {
+        pm.findAll().forEach(product -> {
+            if (product.getPrice() < price) {
+                System.out.println(product);
+            }
+        });
+    }
+
+    public static void findProductsthatWillExpire(Integer date, ProductManagement pm) {
+        pm.findAll().forEach(product -> {
+            if (product.getToDate().isBefore(LocalDate.now().plusDays(date))) {
+                System.out.println(product);
+            }
+        });
+    }
+
+    public static void findProductsByType(ContractType type, ProductManagement pm) {
+        pm.findAll().forEach(product -> {
+            if (product.getContractType() == type) {
+                System.out.println(product);
+            }
+        });
+    }
 }

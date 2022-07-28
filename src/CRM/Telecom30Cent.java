@@ -1,5 +1,6 @@
 package CRM;
 
+import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
 import CRM.Exceptions.*;
 import CRM.Service.Service;
@@ -8,10 +9,7 @@ import CRM.Service.Voice;
 import Database.TelecomService;
 import Util.Util;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class Telecom30Cent {
     public static void main(String[] args) {
@@ -281,7 +279,7 @@ public class Telecom30Cent {
                 System.out.println("Products: ");
                 pm.getProducts().forEach(System.out::println);
                 System.out.println("_________________________________________");
-                System.out.print("Exit[0], Create[1] or Delete[2] a product: ");
+                System.out.print("Exit[0], Create[1], Delete[2], View who purchased[3], Products cheaper than[4], Products by type[5], Products that will expire[6]: ");
                 choice = sc.nextLine();
                 while(true) {
                     if (choice.equals("1")) {
@@ -301,7 +299,56 @@ public class Telecom30Cent {
                         } else {
                             System.out.println("No product with that ID found!");
                         }
-                    } else if (choice.equals("0")) {
+                    } else if(choice.equals("3")) {
+                        System.out.print("Type the product ID to view who purchased that product: ");
+                        String id = sc.nextLine();
+                        Optional<Product> prod;
+                        if ((prod = pm.findById(id)).isPresent()) {
+                            ArrayList<Subscription> customersByProducts = pm.findCustomersByProducts(prod.get(), cm);
+                            customersByProducts.forEach(System.out::println);
+                        } else {
+                            System.out.println("No product with that ID found!");
+                        }
+                    } else if(choice.equals("4")) {
+                        System.out.print("Type the price to view all products cheaper than that (cents): ");
+                        Integer price;
+                        while (true) {
+                            try {
+                                price = sc.nextInt();
+                                break;
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid price!");
+                                sc.nextLine();
+                            }
+                        }
+                        Util.findProductsCheaperThan(price, pm);
+                    } else if(choice.equals("5")) {
+                        System.out.println("Type the type of product to view all products of that type(Prepaid, Postpaid): ");
+                        ContractType type;
+                        while(true) {
+                            try {
+                                type = ContractType.valueOf(sc.nextLine());
+                                break;
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Invalid type!");
+                                sc.nextLine();
+                            }
+                        }
+                        Util.findProductsByType(type, pm);
+                    } else if(choice.equals("6")) {
+                        System.out.println("Type the number of days to view all products that will expire in that number of days: ");
+                        while(true) {
+                            try {
+                                Integer days = sc.nextInt();
+                                Util.findProductsthatWillExpire(days, pm);
+                                break;
+                            } catch (InputMismatchException e) {
+                                System.out.print("Invalid number of days! Type again:");
+                                sc.nextLine();
+                            }
+                        }
+                    }
+                    else if (choice.equals("0")) {
                         break;
                     }
                 }
