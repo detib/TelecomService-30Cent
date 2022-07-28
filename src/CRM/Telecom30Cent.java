@@ -299,6 +299,7 @@ public class Telecom30Cent {
                         } else {
                             System.out.println("No product with that ID found!");
                         }
+                        break;
                     } else if(choice.equals("3")) {
                         System.out.print("Type the product ID to view who purchased that product: ");
                         String id = sc.nextLine();
@@ -309,6 +310,7 @@ public class Telecom30Cent {
                         } else {
                             System.out.println("No product with that ID found!");
                         }
+                        break;
                     } else if(choice.equals("4")) {
                         System.out.print("Type the price to view all products cheaper than that (cents): ");
                         Integer price;
@@ -322,6 +324,7 @@ public class Telecom30Cent {
                             }
                         }
                         Util.findProductsCheaperThan(price, pm);
+                        break;
                     } else if(choice.equals("5")) {
                         System.out.println("Type the type of product to view all products of that type(Prepaid, Postpaid): ");
                         ContractType type;
@@ -335,6 +338,7 @@ public class Telecom30Cent {
                             }
                         }
                         Util.findProductsByType(type, pm);
+                        break;
                     } else if(choice.equals("6")) {
                         System.out.println("Type the number of days to view all products that will expire in that number of days: ");
                         while(true) {
@@ -347,6 +351,7 @@ public class Telecom30Cent {
                                 sc.nextLine();
                             }
                         }
+                        break;
                     }
                     else if (choice.equals("0")) {
                         break;
