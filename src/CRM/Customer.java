@@ -58,6 +58,12 @@ public class Customer implements TelecomService<Contract>, ContactService {
     }
 
 
+    /**
+     * creates a new contract for the customer
+     * @param object the contract to be created
+     * @return true if the contract was created successfully, false otherwise
+     * @throws ContractException if the contract already exists
+     */
     @Override
     public boolean create(Contract object) throws ContractException {
         try {
@@ -78,6 +84,11 @@ public class Customer implements TelecomService<Contract>, ContactService {
         }
     }
 
+    /**
+     * updates a contract for the customer
+     * @param object the contract to be updated
+     * @return true if the contract was updated successfully, false otherwise
+     */
     @Override
     public boolean update(Contract object) {
         try {
@@ -92,6 +103,11 @@ public class Customer implements TelecomService<Contract>, ContactService {
         }
     }
 
+    /**
+     * deletes a contract contact for the customer
+     * @param object the contract to be deleted
+     * @return true if the contract was deleted successfully, false otherwise
+     */
     @Override
     public boolean delete(Contract object) {
         this.contracts = findAll();
@@ -108,6 +124,11 @@ public class Customer implements TelecomService<Contract>, ContactService {
         return false;
     }
 
+    /**
+     * finds a contract by id
+     * @param id the id of the contract to be found
+     * @return the contract if found, null otherwise
+     */
     @Override
     public Optional<Contract> findById(String id) {
         // @TODO recheck
@@ -120,6 +141,10 @@ public class Customer implements TelecomService<Contract>, ContactService {
         return Optional.empty();
     }
 
+    /**
+     * finds all contracts for the customer
+     * @return all contracts for the customer
+     */
     @Override
     public ArrayList<Contract> findAll() {
         try {
@@ -152,6 +177,10 @@ public class Customer implements TelecomService<Contract>, ContactService {
         return new ArrayList<>();
     }
 
+    /**
+     * creates a new contact for the customer
+     * @throws ContactException
+     */
     @Override
     public void createContact() throws ContactException {
         try {

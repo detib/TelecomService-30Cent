@@ -32,6 +32,12 @@ public class CustomerManagement implements TelecomService<Customer> {
         this.customers = findAll();
     }
 
+    /**
+     * create a new customer and add it to the database
+     * @param object the customer to be created
+     * @return true if the customer was created successfully, false otherwise
+     * @throws CustumerException if the customer already exists
+     */
     @Override
     public boolean create(Customer object) throws CustumerException {
         try {
@@ -52,6 +58,11 @@ public class CustomerManagement implements TelecomService<Customer> {
         }
     }
 
+    /**
+     * update a customer in the database
+     * @param object the customer to be updated
+     * @return true if the customer was updated successfully, false otherwise
+     */
     @Override
     public boolean update(Customer object) {
         try {
