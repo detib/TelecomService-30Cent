@@ -14,7 +14,7 @@ public class DatabaseConn {
 
     private DatabaseConn() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url + databaseName, username, password);
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Connection with Database Failed: " + ex.getMessage());
