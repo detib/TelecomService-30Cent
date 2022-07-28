@@ -27,19 +27,40 @@ public class Contact {
     private STATE state;
     private String customerName;
 
-    public Contact(ID idType) { // Contacts
+    /**
+     * Contact constructor to use on other constructors
+     * @param idType ID type
+     */
+    public Contact(ID idType) {
         this.id = ID.CONTACT.createId();
         this.idType = idType;
         this.createdDate = LocalDate.now();
         this.state = STATE.ACTIVE;
     }
-    public Contact(String id, ID idType, LocalDate createdDate, STATE state) { // Contacts
+
+    /**
+     * Contact constructor for the individual customer from the database
+     * @param id ID
+     * @param idType ID type
+     * @param createdDate  created date
+     * @param state state
+     */
+    public Contact(String id, ID idType, LocalDate createdDate, STATE state) {
         this.id = id;
         this.idType = idType;
         this.createdDate = createdDate;
         this.state = state;
     }
-    public Contact(ID idType, String name, String lastname, Gender gender, LocalDate dob) { // Individual
+
+    /**
+     * Contact constructor for the Individual Customer
+     * @param idType ID type
+     * @param name name
+     * @param lastname lastname
+     * @param gender gender
+     * @param dob date of birth
+     */
+    public Contact(ID idType, String name, String lastname, Gender gender, LocalDate dob) {
         this(idType);
         this.name = name;
         this.lastname = lastname;
@@ -47,16 +68,40 @@ public class Contact {
         this.dob = dob;
     }
 
-    public Contact(ID idType, String customerName) { // business constructor
+    /**
+     * Contact constructor for the Business Customer
+     * @param idType
+     * @param customerName
+     */
+    public Contact(ID idType, String customerName) {
         this(idType);
         this.customerName = customerName;
     }
 
+    /**
+     * Contact constructor for the Business Customer from the database
+     * @param id ID
+     * @param idType ID type
+     * @param createdDate created date
+     * @param state state
+     * @param customerName customer name
+     */
     public Contact(String id, ID idType, LocalDate createdDate, STATE state, String customerName) {
         this(id, idType, createdDate, state);
         this.customerName = customerName;
     }
 
+    /**
+     * Contact constructor
+     * @param id ID
+     * @param name name
+     * @param lastname lastname
+     * @param gender gender
+     * @param dob date of birth
+     * @param idType ID type
+     * @param createdDate Created date
+     * @param state state
+     */
     public Contact(String id, String name, String lastname, Gender gender, LocalDate dob, ID idType, LocalDate createdDate, STATE state) {
         this(id, idType, createdDate, state);
         this.name = name;
