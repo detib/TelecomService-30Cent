@@ -80,16 +80,14 @@ public class Customer implements TelecomService<Contract>, ContactService {
 
     @Override
     public boolean update(Contract object) {
-        contracts.remove(object);
         try {
-            Util.updateContract(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
                     "UPDATE contract SET state = '%s' WHERE CoID = '%s';"
                     ,object.getState(), object.getId()));
-            return contracts.add(object);
+            this.contracts = findAll();
+            return true;
         } catch (SQLException e) {
-            contracts.add(object);
             throw new RuntimeException(e);
         }
     }
