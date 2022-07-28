@@ -79,7 +79,7 @@ public class ProductManagement implements TelecomService<Product> {
     public ArrayList<Product> findAll() {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
-            ResultSet allProducts = conn.createStatement().executeQuery("select * from product where state != 'DEACTIVATE' and toDate > cast(now() as date)");
+            ResultSet allProducts = conn.createStatement().executeQuery("select * from product where state != 'DEACTIVATE')");
             ArrayList<Product> tempProducts = new ArrayList<>();
             while(allProducts.next()) {
                 String id = allProducts.getString("productID");
@@ -100,7 +100,7 @@ public class ProductManagement implements TelecomService<Product> {
         }
     }
 
-    public ArrayList<Customer> findCustomersByProducts(Product prod, CustomerManagement cm) {
+    public ArrayList<Subscription> findCustomersByProducts(Product prod, CustomerManagement cm) {
         Product product = findById(prod.getId()).get();
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
@@ -108,11 +108,22 @@ public class ProductManagement implements TelecomService<Product> {
                     String.format(
                             "select * from sales where productId = '%s'", product.getId()
                     ));
-            ArrayList<Customer> tempCustomers = new ArrayList<>();
+            ArrayList<String> tempSubscribersId = new ArrayList<>();
             while(allCustomers.next()) {
                 String id = allCustomers.getString("subscriberId");
-                cm.findById(id).ifPresent(tempCustomers::add);
+                tempSubscribersId.add(id);
             }
+            ArrayList<Subscription> tempSubscriptions = new ArrayList<>();
+            cm.findAll().forEach(
+                    customer -> customer.findAll()
+                            .forEach(contract -> contract.findAll()
+                                    .forEach(subscription -> {
+                                        if(tempSubscribersId.contains(subscription.getId())) {
+                                            tempSubscriptions.add(subscription);
+                                        }
+                                    }))
+                                );
+            return tempSubscriptions;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

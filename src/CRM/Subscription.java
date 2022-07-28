@@ -1,9 +1,9 @@
 package CRM;
 
-import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
 import CRM.Enum.ServiceEnum;
 import CRM.Exceptions.ContactException;
+import CRM.Exceptions.ProductExpiredException;
 import CRM.Exceptions.ServiceException;
 import CRM.Exceptions.ServiceExistsException;
 import CRM.Service.*;
@@ -16,14 +16,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -189,7 +186,10 @@ public class Subscription implements TelecomService<Service>, ContactService {
         return check(new HashSet<>()).containsAll(set);
     }
 
-    public boolean buyProduct(Product prod) throws ServiceException {
+    public boolean buyProduct(Product prod) throws ServiceException, ProductExpiredException {
+        if(prod.getToDate().isBefore(LocalDate.now())) {
+            throw new ProductExpiredException();
+        }
         if(checkServicesForProduct(prod)) {
             if(services == null) this.services = findAll();
             try {

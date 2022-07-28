@@ -194,10 +194,14 @@ public class Telecom30Cent {
                                                                             }
                                                                         } catch (ServiceException e) {
                                                                             throw new RuntimeException(e);
+                                                                        } catch (ProductExpiredException see) {
+                                                                            System.out.println("Product is expired!");
                                                                         }
                                                                     } else {
                                                                         System.out.println("You cannot buy a product with this contract!");
                                                                     }
+                                                                } else {
+                                                                    System.out.println("Product not found.");
                                                                 }
                                                             } else {
                                                                 System.out.println("There are no available products.");
