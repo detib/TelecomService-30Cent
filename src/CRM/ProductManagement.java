@@ -1,6 +1,7 @@
 package CRM;
 
 import CRM.Enum.ContractType;
+import CRM.Enum.CustomerType;
 import CRM.Exceptions.ProductException;
 import CRM.Service.Data;
 import CRM.Service.SMS;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
+import Util.ID;
 
 public class ProductManagement implements TelecomService<Product> {
 

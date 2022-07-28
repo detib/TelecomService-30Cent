@@ -1,6 +1,6 @@
 package CRM.Service;
 
-import lombok.Getter;
+
 
 public interface ServiceType {
     void spendAmount(Integer i);

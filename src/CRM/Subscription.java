@@ -5,6 +5,7 @@ import CRM.Enum.STATE;
 import CRM.Enum.ServiceEnum;
 import CRM.Exceptions.ContactException;
 import CRM.Exceptions.ServiceException;
+import CRM.Exceptions.ServiceExistsException;
 import CRM.Service.*;
 import Database.ContactService;
 import Database.DatabaseConn;
@@ -56,15 +57,19 @@ public class Subscription implements TelecomService<Service>, ContactService {
     }
 
     @Override
-    public boolean create(Service object) throws ServiceException {
-
+    public boolean create(Service object) throws ServiceException, ServiceExistsException {
+        if(services == null) this.services = findAll();
+        for (Service service : services) {
+             if (service.getServiceType().equals(object.getServiceType())) {
+                 throw new ServiceExistsException("Service already exists");
+             }
+        }
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
                     "INSERT INTO service VALUES('%s', '%s', '%s', '%s', '%s');",
                     object.getId(), object.getServiceType().getTypeAmount(),
                     object.getCreatedDate(), object.getState(), id));
-            if(services == null) this.services = new ArrayList<>();
             return services.add(object);
         } catch (SQLException e){
             throw new ServiceException("Cannot add a Service to the database!");
@@ -78,15 +83,16 @@ public class Subscription implements TelecomService<Service>, ContactService {
             conn.createStatement().execute(String.format(
                     "UPDATE service SET serviceType = '%s' WHERE SeID = '%s';",
                     object.getServiceType().getTypeAmount() , object.getId()));
+            this.services = findAll();
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return true;
     }
 
     @Override
     public boolean delete(Service object) {
-        this.services = findAll();
+        if(services == null) this.services = findAll();
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM service where SeID='%s'", object.getId()));
@@ -99,7 +105,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public Optional<Service> findById(String id) {
-        this.services = findAll();
+        if(services == null) this.services = findAll();
         for (Service service : services){
             if (service.getId().equals(id)){
                 return Optional.of(service);
@@ -152,7 +158,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
     }
 
     private boolean checkIfItHasData() {
-        this.services = findAll();
+        if(services == null) this.services = findAll();
         for (Service service : services) {
             if(service.getServiceType() instanceof Data) return true;
         }
@@ -160,7 +166,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
     }
 
     private boolean checkIFItHasSMS() {
-        this.services = findAll();
+        if(services == null) this.services = findAll();
         for (Service service : services) {
             if(service.getServiceType() instanceof SMS) return true;
         }
@@ -183,15 +189,9 @@ public class Subscription implements TelecomService<Service>, ContactService {
         return check(new HashSet<>()).containsAll(set);
     }
 
-    public boolean buyProduct(Product prod) {
+    public boolean buyProduct(Product prod) throws ServiceException {
         if(checkServicesForProduct(prod)) {
-            for (Service service : services) {
-                if(service.getServiceType() instanceof Data) service.getServiceType().addAmount(prod.getData().getMB());
-                if(service.getServiceType() instanceof SMS) service.getServiceType().addAmount(prod.getSms().getMessages());
-                if(service.getServiceType() instanceof Voice) service.getServiceType().addAmount(prod.getVoice().getMinutes());
-                if(service.getServiceType() instanceof SimCard) service.getServiceType().addAmount(prod.getSimCard().getCredits());
-                update(service);
-            }
+            if(services == null) this.services = findAll();
             try {
                 Connection conn = DatabaseConn.getInstance().getConnection();
                 conn.createStatement().execute(
@@ -199,11 +199,17 @@ public class Subscription implements TelecomService<Service>, ContactService {
                                 "Insert into sales values('%s', '%s')",
                                 this.id, prod.getId()
                         ));
+                for (Service service : services) {
+                    if(service.getServiceType() instanceof Data) service.getServiceType().addAmount(prod.getData().getMB());
+                    if(service.getServiceType() instanceof SMS) service.getServiceType().addAmount(prod.getSms().getMessages());
+                    if(service.getServiceType() instanceof Voice) service.getServiceType().addAmount(prod.getVoice().getMinutes());
+                    if(service.getServiceType() instanceof SimCard) service.getServiceType().addAmount(prod.getSimCard().getCredits());
+                    update(service);
+                }
+                return true;
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new ServiceException("Cannot add a product!");
             }
-
-            return true;
         }
         return false;
     }

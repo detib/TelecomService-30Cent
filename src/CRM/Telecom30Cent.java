@@ -5,6 +5,7 @@ import CRM.Exceptions.*;
 import CRM.Service.Service;
 import CRM.Service.SimCard;
 import CRM.Service.Voice;
+import Database.TelecomService;
 import Util.Util;
 
 import java.util.ArrayList;
@@ -38,12 +39,12 @@ public class Telecom30Cent {
                         case "1" -> {
                             System.out.print("Enter a customer id: ");
                             Optional<Customer> cust;
-                            if ((cust = cm.findById(sc.nextLine())).isPresent() && cust.get().getState() == STATE.ACTIVE) {
+                            if ((cust = cm.findById(sc.nextLine())).isPresent()) {
                                 Customer customer = cust.get();
                                 System.out.println(customer);
-                                System.out.print("Create Contracts[1], View Contracts[2], Update Contract[3]: ");
+                                System.out.print("Create Contracts[1], View Contracts[2]: ");
                                 choice = sc.nextLine();
-                                if (choice.equals("1")) {
+                                if (choice.equals("1") && customer.getState() == STATE.ACTIVE) {
                                     try {
                                         customer.create(Util.createContract(sc));
                                     } catch (ContractException e) {
@@ -51,7 +52,10 @@ public class Telecom30Cent {
                                     }
                                 } else if (choice.equals("2")) {
                                     ArrayList<Contract> contracts = customer.findAll();
+                                    System.out.println("_________________________________________________");
+                                    System.out.println("Contracts: ");
                                     contracts.forEach(System.out::println);
+                                    System.out.println("_________________________________________________");
                                     if (contracts.size() != 0) {
                                         System.out.print("Exit[0], Update Contract[1], View Contract[2], Delete Contract[3]: ");
                                         choice = sc.nextLine();
@@ -65,13 +69,10 @@ public class Telecom30Cent {
                                                 if (contractToUpdate.isPresent()) {
                                                     Contract contract = contractToUpdate.get();
                                                     System.out.println(contract);
-                                                    System.out.print("Change the state (ACTIVE, DEACTIVE, INACTIVE): ");
-                                                    String state = sc.nextLine();
-                                                    if (state.equals("ACTIVE") || state.equals("DEACTIVE") || state.equals("INACTIVE")) {
-                                                        contract.setState(STATE.valueOf(state));
-                                                        customer.update(contract);
-                                                    } else {
-                                                        System.out.println("Invalid state.");
+                                                    try {
+                                                        customer.create(Util.createContract(sc));
+                                                    } catch (ContractException e) {
+                                                        System.out.println("Could not update contract.");
                                                     }
                                                 } else {
                                                     System.out.println("Could not find contract.");
@@ -80,30 +81,31 @@ public class Telecom30Cent {
                                             case "2" -> {
                                                 System.out.print("Write the contract id to view: ");
                                                 Optional<Contract> contractToView = customer.findById(sc.nextLine());
-                                                if(contractToView.isPresent() && contractToView.get().getState().equals(STATE.ACTIVE)) {
+                                                if(contractToView.isPresent()) {
                                                     Contract contract = contractToView.get();
                                                     ArrayList<Subscription> subscriptions = contract.findAll();
+                                                    System.out.println("_________________________________________________");
+                                                    System.out.println("Subscriptions: ");
                                                     subscriptions.forEach(System.out::println);
+                                                    System.out.println("_________________________________________________");
                                                     System.out.print("Create Subscription[1], View Subscription[2], Delete Subscription[3], Update Subscription[4], Buy Product[5]: ");
                                                     choice = sc.nextLine();
-                                                    if (choice.equals("1")) { // create subscription
+                                                    if (choice.equals("1") && contract.getState() == STATE.ACTIVE) { // create subscription
                                                         try {
                                                             contract.create(Util.getSubscription(sc));
                                                         } catch (SubscriptionException e) {
                                                             System.out.println("Could not create subscription.");
                                                         }
                                                     } else if (choice.equals("2")) {
-                                                        subscriptions.forEach(System.out::println);
                                                         System.out.print("Write the subscription id to view: ");
                                                         Optional<Subscription> subscriptionToView = contract.findById(sc.nextLine());
                                                         if(subscriptionToView.isPresent()) {
                                                             Subscription subscription = subscriptionToView.get();
                                                             ArrayList<Service> subscriptionAll = subscription.findAll();
                                                             subscriptionAll.forEach(System.out::println);
-
                                                             System.out.print("Create Service[1], View Service[2], Delete Service[3]: ");
                                                             choice = sc.nextLine();
-                                                            if (Objects.equals(choice, "1")){
+                                                            if (Objects.equals(choice, "1") && contract.getState() == STATE.ACTIVE) { // create service
                                                                 try {
                                                                     subscription.create(Util.createService(sc));
                                                                 } catch (ServiceException e){
@@ -127,7 +129,6 @@ public class Telecom30Cent {
                                                                     System.out.println("No services to delete");
                                                                 }
                                                             }
-
                                                             //@TODO
                                                         } else {
                                                             System.out.println("Subscription not found.");
@@ -152,7 +153,7 @@ public class Telecom30Cent {
                                                         } else {
                                                             System.out.println("Subscription not found.");
                                                         }
-                                                    } else if (choice.equals("5")) {
+                                                    } else if (choice.equals("5") && contract.getState() == STATE.ACTIVE) {
                                                         System.out.print("Write the subscription id to buy: ");
                                                         Optional<Subscription> subscriptionToBuy = contract.findById(sc.nextLine());
                                                         if(subscriptionToBuy.isPresent()) {
@@ -179,7 +180,7 @@ public class Telecom30Cent {
                                                         }
 
                                                     } else {
-                                                        System.out.println("Invalid choice.");
+                                                        System.out.println("Invalid choice or contract is not active.");
                                                     }
                                                 } else {
                                                     System.out.println("Could not find contract or it is not active.");
@@ -201,19 +202,11 @@ public class Telecom30Cent {
                                     } else {
                                         System.out.println("No contracts found.");
                                     }
-                                } else if(choice.equals("3")) {
-                                    System.out.print("Enter contract id: ");
-                                    String contractId = sc.nextLine();
-                                    Optional<Contract> contract = customer.findById(contractId);
-                                    if(contract.isPresent()) {
-                                        Contract c = contract.get();
-                                        customer.update(c);
-                                    } else {
-                                        System.out.println("Contract not found.");
-                                    }
+                                } else {
+                                    System.out.println("Invalid choice or customer is not active.");
                                 }
                             } else { // view 1 customer
-                                System.out.println("Could not find customer or customer is not active.");
+                                System.out.println("Could not find customer.");
                             }
                         }
                         case "2" -> {
@@ -236,7 +229,7 @@ public class Telecom30Cent {
                             Optional<Customer> cust;
                             if ((cust = cm.findById(customerId)).isPresent()) {
                                 Customer customer = cust.get();
-                                cm.update(customer);
+                                cm.update(Util.updateCustomer(sc, customer));
                             } else {
                                 System.out.println("Could not find customer.");
                             }

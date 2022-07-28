@@ -54,14 +54,13 @@ public class CustomerManagement implements TelecomService<Customer> {
 
     @Override
     public boolean update(Customer object) {
-        customers.remove(object);
         try {
-            Util.updateCustomer(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
                     "UPDATE customer SET state = '%s' WHERE CuId = '%s';"
                     , object.getState(), object.getId()));
-            return customers.add(object);
+            this.customers = findAll();
+            return true;
         } catch (SQLException e) {
             customers.add(object);
             throw new RuntimeException(e);
@@ -78,10 +77,11 @@ public class CustomerManagement implements TelecomService<Customer> {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM contact where CtID='%s'", object.getContact().getId()));
             conn.createStatement().execute(String.format("DELETE FROM customer where CuID='%s'", object.getId()));
+            return true;
         } catch (SQLException sqle) {
+            customers.add(object);
             throw new RuntimeException("Failed to delete on CustomerManagement: " + sqle.getMessage());
         }
-        return false;
     }
 
     @Override

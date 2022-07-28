@@ -39,9 +39,6 @@ public class Contact {
         this.createdDate = createdDate;
         this.state = state;
     }
-
-
-
     public Contact(ID idType, String name, String lastname, Gender gender, LocalDate dob) { // Individual
         this(idType);
         this.name = name;

@@ -2,10 +2,7 @@ package CRM;
 
 import CRM.Enum.ContractType;
 import CRM.Enum.STATE;
-import CRM.Exceptions.ContactException;
-import CRM.Exceptions.ContractException;
-import CRM.Exceptions.ServiceException;
-import CRM.Exceptions.SubscriptionException;
+import CRM.Exceptions.*;
 import CRM.Service.Service;
 import CRM.Service.ServiceType;
 import CRM.Service.SimCard;
@@ -73,7 +70,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
                 object.createContact();
                 object.create(new Service(new SimCard(300))); // create a sim card
                 object.create(new Service(new Voice(60))); // create a voice service
-            } catch (ServiceException | ContactException e) {
+            } catch (ServiceException | ContactException | ServiceExistsException e) {
                 throw new RuntimeException(e);
             }
             if(subscriptions == null) this.subscriptions = new ArrayList<>(); // initialize subscriptions to remove null pointer exception
@@ -85,14 +82,13 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public boolean update(Subscription object) {
-        subscriptions.remove(object); // remove the old subscription from the list
         try {
-            Util.updateSubscription(new Scanner(System.in), object);
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
                     "UPDATE Subscription SET state = '%s' WHERE SuID='%s';",
                     object.getState(), object.getId()));
-            return subscriptions.add(object);
+            this.subscriptions = findAll();
+            return true;
         } catch (SQLException e) {
             subscriptions.add(object);
             throw new RuntimeException(e);
@@ -116,7 +112,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
 
     @Override
     public Optional<Subscription> findById(String id) { // find a subscription by its id, can return null
-        this.subscriptions = findAll();
+        if(subscriptions == null) this.subscriptions = findAll();
         for (Subscription subscription : subscriptions){ // iterate through the subscriptions
             if (subscription.getId().equals(id)){
                 return Optional.of(subscription);
