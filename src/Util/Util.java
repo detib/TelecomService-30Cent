@@ -313,6 +313,10 @@ public class Util {
             System.out.println("When do you want this product to start? (YYYY-MM-DD)");
             try {
                 fromDate = LocalDate.parse(sc.nextLine());
+                if(fromDate.isAfter(LocalDate.now())) {
+                    System.out.println("Please enter a date before today!");
+                    continue;
+                }
                 break;
             } catch (DateTimeParseException e) {
                 System.out.print("Please enter a valid date(yyyy-mm-dd): ");
@@ -323,6 +327,10 @@ public class Util {
             System.out.println("When do you want this product to end? (YYYY-MM-DD)");
             try {
                 toDate = LocalDate.parse(sc.nextLine());
+                if(toDate.isBefore(fromDate)) {
+                    System.out.println("Please enter a date after the start date!");
+                    continue;
+                }
                 break;
             } catch (DateTimeParseException e) {
                 System.out.print("Please enter a valid date(yyyy-mm-dd): ");
