@@ -307,6 +307,9 @@ public class Telecom30Cent {
                         if ((prod = pm.findById(id)).isPresent()) {
                             ArrayList<Subscription> customersByProducts = pm.findCustomersByProducts(prod.get(), cm);
                             customersByProducts.forEach(System.out::println);
+                            if(customersByProducts.size() == 0) {
+                                System.out.println("No customers bought this product.");
+                            }
                         } else {
                             System.out.println("No product with that ID found!");
                         }
@@ -323,7 +326,11 @@ public class Telecom30Cent {
                                 sc.nextLine();
                             }
                         }
-                        Util.findProductsCheaperThan(price, pm);
+                        ArrayList<Product> productsCheaperThan = Util.findProductsCheaperThan(price, pm);
+                        productsCheaperThan.forEach(System.out::println);
+                        if(productsCheaperThan.size() == 0) {
+                            System.out.println("No products found under that price.");
+                        }
                         break;
                     } else if(choice.equals("5")) {
                         System.out.println("Type the type of product to view all products of that type(Prepaid, Postpaid): ");
@@ -337,14 +344,22 @@ public class Telecom30Cent {
                                 sc.nextLine();
                             }
                         }
-                        Util.findProductsByType(type, pm);
+                        ArrayList<Product> productsByType = Util.findProductsByType(type, pm);
+                        productsByType.forEach(System.out::println);
+                        if(productsByType.size() == 0) {
+                            System.out.println("No products found with that type.");
+                        }
                         break;
                     } else if(choice.equals("6")) {
                         System.out.println("Type the number of days to view all products that will expire in that number of days: ");
                         while(true) {
                             try {
                                 Integer days = sc.nextInt();
-                                Util.findProductsthatWillExpire(days, pm);
+                                ArrayList<Product> productsthatWillExpire = Util.findProductsthatWillExpire(days, pm);
+                                productsthatWillExpire.forEach(System.out::println);
+                                if(productsthatWillExpire.size() == 0) {
+                                    System.out.println("No products found that will expire in that number of days.");
+                                }
                                 break;
                             } catch (InputMismatchException e) {
                                 System.out.print("Invalid number of days! Type again:");
