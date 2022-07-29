@@ -27,7 +27,7 @@ public class Contact {
     private String customerName;
 
     /**
-     * Contact constructor to use on other constructors
+     * Contact constructor to create a new contact
      * @param idType ID type
      */
     public Contact(ID idType) {
@@ -38,7 +38,7 @@ public class Contact {
     }
 
     /**
-     * Contact constructor for the individual customer from the database
+     * Contact constructor to create a new contact from database
      * @param id ID
      * @param idType ID type
      * @param createdDate  created date
@@ -69,8 +69,6 @@ public class Contact {
 
     /**
      * Contact constructor for the Business Customer
-     * @param idType
-     * @param customerName
      */
     public Contact(ID idType, String customerName) {
         this(idType);
@@ -91,7 +89,7 @@ public class Contact {
     }
 
     /**
-     * Contact constructor
+     * Contact constructor individual from the database
      * @param id ID
      * @param name name
      * @param lastname lastname
