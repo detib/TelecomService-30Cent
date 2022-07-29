@@ -24,14 +24,14 @@ public class Util {
      * @return Customer object
      */
     public static Customer createCustomer(Scanner sc) {
-        System.out.print("What type of customer are you? (Individual, Business):");
+        System.out.print("What type of customer are you? (Individual, Business): ");
         CustomerType customerType;
         while (true) {
             try {
                 customerType = CustomerType.valueOf(sc.nextLine().toUpperCase());
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.print("Invalid input. (INDIVIDUAL, BUSINESS): ");
+                System.out.print("Invalid input. (Individual, Business): ");
             }
         }
         if(customerType == CustomerType.BUSINESS) {
@@ -87,7 +87,7 @@ public class Util {
                 customer.setState(STATE.valueOf(updateChoice));
                 break;
             } catch (IllegalArgumentException ex) {
-                System.out.println("State must be ACTIVE/DEACTIVE/INACTIVE");
+                System.out.println("State must be ACTIVE/DEACTIVE/INACTIVE: ");
             }
 
         }
