@@ -56,9 +56,9 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean create(Service object) throws ServiceException, ServiceExistsException {
-        if(services == null) this.services = findAll();
+//        if(services == null) this.services = findAll();
         for (Service service : services) {
-             if (service.getServiceType().equals(object.getServiceType())) {
+             if (object.getServiceType().getClass() == service.getServiceType().getClass()) {
                  throw new ServiceExistsException("Service already exists");
              }
         }

@@ -144,7 +144,7 @@ public class Util {
      */
     public static Subscription getSubscription(Scanner sc) {
         System.out.print("Which Phone Number option do you want (044, 045, 046): ");
-        loop: while (true){
+        while (true){
             String phoneChoice = sc.nextLine();
             PhoneNumber phoneNumber;
             switch (phoneChoice) {
@@ -174,9 +174,9 @@ public class Util {
      */
     public static Subscription updateSubscription(Scanner sc, Subscription subscription){
         System.out.printf("Your State is: %s\n", subscription.getState());
-        System.out.print("What do you want to change the State to (ACTIVE, DEACTIVE, INACTIVE) or 'Q' to exit");
+        System.out.print("What do you want to change the State to (ACTIVE, DEACTIVE, INACTIVE) or 'Q' to exit: ");
         while(true){
-            String updateChoice = sc.nextLine();
+            String updateChoice = sc.nextLine().toUpperCase();
             if(updateChoice.equalsIgnoreCase("q")) return subscription;
             try {
                 subscription.setState(STATE.valueOf(updateChoice));
@@ -342,6 +342,14 @@ public class Util {
                 fromDate, toDate, productName, productType);
     }
 
+    /**
+     * Static method used to find products cheaper than a price given by the user
+     *
+     *
+     * @param price products cheaper than this price
+     * @param pm productManager object to find the products
+     * @return ArrayList of products cheaper than the price
+     */
     public static ArrayList<Product> findProductsCheaperThan(Double price, ProductManagement pm) {
         ArrayList<Product> prod = new ArrayList<>();
         pm.findAll().forEach(product -> {
@@ -352,6 +360,12 @@ public class Util {
         return prod;
     }
 
+    /**
+     * Static method used to find products that will expire in a given period of time
+     * @param date date to compare with the products
+     * @param pm productManager object to find the products
+     * @return ArrayList of products that will expire in the given period of time
+     */
     public static ArrayList<Product> findProductsthatWillExpire(Integer date, ProductManagement pm) {
         ArrayList<Product> prod = new ArrayList<>();
         pm.findAll().forEach(product -> {
@@ -364,6 +378,12 @@ public class Util {
         return prod;
     }
 
+    /**
+     * Static method used to find products that match a given type
+     * @param type type of product to find
+     * @param pm productManager object to find the products
+     * @return ArrayList of products that match the given type
+     */
     public static ArrayList<Product> findProductsByType(ContractType type, ProductManagement pm) {
         ArrayList<Product> prod = new ArrayList<>();
         pm.findAll().forEach(product -> {

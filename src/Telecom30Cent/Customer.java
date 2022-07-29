@@ -104,7 +104,6 @@ public class Customer implements TelecomService<Contract>, ContactService {
      */
     @Override
     public boolean delete(Contract object) {
-        this.contracts = findAll();
         ArrayList<Subscription> allSubscriptions = object.findAll();
         allSubscriptions.forEach(object::delete);
         try {

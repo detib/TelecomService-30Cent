@@ -111,7 +111,7 @@ public class Telecom30Cent {
                                                                 } catch (ServiceException e){
                                                                     System.out.println("Could not create Service!");
                                                                 } catch (ServiceExistsException see) {
-                                                                    System.out.println("Service already exists!");
+                                                                    System.out.println(see.getMessage());
                                                                 }
                                                             } else if (  // delete service
                                                                     choice.equals("2") &&

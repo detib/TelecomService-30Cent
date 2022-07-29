@@ -135,7 +135,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM contact where CtId='%s'", object.getContact().getId())); // delete the contact
-            conn.createStatement().execute(String.format("DELETE FROM subscription where SuID='%s'", id)); // delete the subscription
+            conn.createStatement().execute(String.format("DELETE FROM subscription where SuID='%s'", object.getId())); // delete the subscription
             conn.createStatement().execute(String.format("DELETE FROM sales where subscriberId='%s'", object.getId())); // delete the sales
             subscriptions.remove(object); // remove the subscription from the ArrayList
         } catch (SQLException sqle) {
