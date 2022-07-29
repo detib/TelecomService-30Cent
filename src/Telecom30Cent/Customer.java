@@ -21,7 +21,6 @@ import java.util.Optional;
 @Getter
 @ToString(doNotUseGetters = true, includeFieldNames = false)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-
 public class Customer implements TelecomService<Contract>, ContactService {
     @EqualsAndHashCode.Include
     private final String id;
@@ -34,11 +33,6 @@ public class Customer implements TelecomService<Contract>, ContactService {
     @ToString.Exclude
     private ArrayList<Contract> contracts;
 
-<<<<<<< HEAD
-//    { this.contracts = findAll(); }
-=======
-
->>>>>>> 0b8023c (changed main, fixed typos, fixed state issues)
 
     public Customer(CustomerType customerType, Contact contact) {
         this.id = ID.CUSTOMER.createId();
@@ -62,7 +56,7 @@ public class Customer implements TelecomService<Contract>, ContactService {
      * creates a new contract for the customer
      * @param object the contract to be created
      * @return true if the contract was created successfully, false otherwise
-     * @throws ContractException if the contract already exists
+     *
      */
     @Override
     public boolean create(Contract object) {

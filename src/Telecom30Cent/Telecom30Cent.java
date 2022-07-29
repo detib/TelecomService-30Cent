@@ -95,7 +95,7 @@ public class Telecom30Cent {
                                                             Subscription subscription = subscriptionToView.get();
                                                             ArrayList<Service> services = subscription.findAll();
                                                             System.out.println("_________________________________________________");
-                                                            System.out.print("Services: ");
+                                                            System.out.println("Services: ");
                                                             services.forEach(System.out::println);
                                                             System.out.println("_________________________________________________");
                                                             System.out.print("Exit[0], Create Service[1], Delete Service[2]: ");
@@ -173,7 +173,7 @@ public class Telecom30Cent {
                                                                 Optional<Product> product = pm.findById(choice);
                                                                 if(product.isPresent()) {
                                                                     Product prod = product.get();
-                                                                    if(contract.getContractType() != prod.getContractType()) {
+                                                                    if(contract.getContractType() == prod.getContractType()) {
                                                                         try {
                                                                             if (subscription.buyProduct(prod)) {
                                                                                 System.out.printf("Product %s bought!\n", prod.getProductName());

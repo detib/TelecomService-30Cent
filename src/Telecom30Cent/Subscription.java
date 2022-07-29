@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Getter
-@ToString(doNotUseGetters = true, includeFieldNames = true)
+@ToString(doNotUseGetters = true, includeFieldNames = false)
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Subscription implements TelecomService<Service>, ContactService {
     private final String id;
@@ -90,7 +90,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public boolean delete(Service object) {
-        if(services == null) this.services = findAll();
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format("DELETE FROM service where SeID='%s'", object.getId()));
@@ -103,7 +102,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
 
     @Override
     public Optional<Service> findById(String id) {
-        this.services = findAll();
         for (Service service : services){
             if (service.getId().equals(id)){
                 return Optional.of(service);
@@ -156,7 +154,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
     }
 
     private boolean checkIfItHasData() {
-        if(services == null) this.services = findAll();
         for (Service service : services) {
             if(service.getServiceType() instanceof Data) return true;
         }
@@ -164,7 +161,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
     }
 
     private boolean checkIFItHasSMS() {
-        if(services == null) this.services = findAll();
         for (Service service : services) {
             if(service.getServiceType() instanceof SMS) return true;
         }
@@ -180,7 +176,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
     private boolean checkServicesForProduct(Product prod) {
         Integer mb = prod.getData().getMB();
         Integer messages = prod.getSms().getMessages();
-        ArrayList<Service> services = findAll();
         HashSet<ServiceEnum> set = new HashSet<>();
         if(mb > 0) set.add(ServiceEnum.DATA);
         if(messages > 0) set.add(ServiceEnum.SMS);
@@ -192,7 +187,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
             throw new ProductExpiredException();
         }
         if(checkServicesForProduct(prod)) {
-            if(services == null) this.services = findAll();
             try {
                 Connection conn = DatabaseConn.getInstance().getConnection();
                 conn.createStatement().execute(

@@ -38,7 +38,6 @@ public class CustomerManagement implements TelecomService<Customer> {
                     "INSERT INTO customer VALUES('%s', '%s', '%s', '%s', '%s');"
                     , object.getId(), object.getCreatedDate(), object.getState(), object.getCustomerType(), object.getContact().getId()));
             try {
-//                System.out.println("Creating contact");
                 object.createContact();
             } catch (ContactException e) {
                 System.out.println(e.getMessage());
@@ -53,7 +52,7 @@ public class CustomerManagement implements TelecomService<Customer> {
     /**
      * update a customer in the database
      * @param object the customer to be updated
-     * @return true if the customer was updated successfully, false otherwise
+     * @return true if the customer was updated
      */
     @Override
     public boolean update(Customer object) {
@@ -77,7 +76,6 @@ public class CustomerManagement implements TelecomService<Customer> {
      */
     @Override
     public boolean delete(Customer object) {
-        customers = findAll();
         customers.remove(object);
         ArrayList<Contract> allContracts = object.findAll();
         allContracts.forEach(object::delete);
