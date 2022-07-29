@@ -37,10 +37,6 @@ public class Subscription implements TelecomService<Service>, ContactService {
     @ToString.Exclude
     private ArrayList<Service> services;
 
-    {
-        this.services = findAll();
-    }
-
     public Subscription(Contact contact, PhoneNumber phoneNumber) {
         this.id = ID.SUBSCRIPTION.createId();
         this.phoneNumber = phoneNumber.generateNumber();
@@ -55,6 +51,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
         this.createdDate = createdDate;
         this.state = state;
         this.contact = contact;
+        this.services = findAll();
     }
 
     @Override

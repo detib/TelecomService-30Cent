@@ -36,9 +36,6 @@ public class Contract implements TelecomService<Subscription>, ContactService {
     @ToString.Exclude
     private ArrayList<Subscription> subscriptions;
 
-    {
-        this.subscriptions = new ArrayList<>();
-    } // runs before constructor to remove null pointer exception
 
     /**
      * Constructor for Contract
@@ -68,6 +65,7 @@ public class Contract implements TelecomService<Subscription>, ContactService {
         this.createdDate = createdDate;
         this.state = state;
         this.contact = contact;
+        this.subscriptions = findAll();
     }
 
     /**

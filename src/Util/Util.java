@@ -108,7 +108,7 @@ public class Util {
                 contractType = ContractType.valueOf(contype.toUpperCase());
                 break;
             } catch (IllegalArgumentException iex) {
-                System.out.print("Wrong Type... Please try again!");
+                System.out.println("Wrong Type... Please try again!");
                 System.out.print("What type of contract do you want to create (PREPAID, POSTPAID): ");
             }
         }
@@ -122,7 +122,7 @@ public class Util {
      * @return Contract object
      */
     public static Contract updateContract(Scanner sc, Contract contract) { // Update Contract
-        System.out.printf("Currently your STATE is: %s", contract.getState());
+        System.out.printf("Currently your STATE is: %s\n", contract.getState());
         System.out.print("What do you want to change the State to (ACTIVE/DEACTIVE/INACTIVE) or 'Q' to exit: ");
         while (true) {
             String updateChoice = sc.nextLine().toUpperCase();
@@ -131,7 +131,7 @@ public class Util {
                 contract.setState(STATE.valueOf(updateChoice));
                 break;
             } catch (IllegalArgumentException ex){
-                System.out.println("State must be (ACTIVE/DEACTIVE/INACTIVE)");
+                System.out.print("State must be (ACTIVE/DEACTIVE/INACTIVE): ");
             }
         }
         return contract;
@@ -313,8 +313,8 @@ public class Util {
             System.out.println("When do you want this product to start? (YYYY-MM-DD)");
             try {
                 fromDate = LocalDate.parse(sc.nextLine());
-                if(fromDate.isAfter(LocalDate.now())) {
-                    System.out.println("Please enter a date before today!");
+                if(!fromDate.isAfter(LocalDate.now())) {
+                    System.out.println("Please enter a date after today!");
                     continue;
                 }
                 break;
@@ -327,7 +327,7 @@ public class Util {
             System.out.println("When do you want this product to end? (YYYY-MM-DD)");
             try {
                 toDate = LocalDate.parse(sc.nextLine());
-                if(toDate.isBefore(fromDate)) {
+                if(!toDate.isAfter(fromDate)) {
                     System.out.println("Please enter a date after the start date!");
                     continue;
                 }
@@ -342,10 +342,10 @@ public class Util {
                 fromDate, toDate, productName, productType);
     }
 
-    public static ArrayList<Product> findProductsCheaperThan(Integer price, ProductManagement pm) {
+    public static ArrayList<Product> findProductsCheaperThan(Double price, ProductManagement pm) {
         ArrayList<Product> prod = new ArrayList<>();
         pm.findAll().forEach(product -> {
-            if (product.getPrice() < price) {
+            if (product.getPrice() < price * 100) {
                 prod.add(product);
             }
         });
@@ -355,7 +355,9 @@ public class Util {
     public static ArrayList<Product> findProductsthatWillExpire(Integer date, ProductManagement pm) {
         ArrayList<Product> prod = new ArrayList<>();
         pm.findAll().forEach(product -> {
-            if (product.getToDate().isBefore(LocalDate.now().plusDays(date))) {
+            if (
+                    product.getToDate().isBefore(LocalDate.now().plusDays(date)) // if product is before today + days given
+                            && product.getToDate().isAfter(LocalDate.now())) { // if product is after today
                 prod.add(product);
             }
         });
