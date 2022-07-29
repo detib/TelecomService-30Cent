@@ -41,11 +41,7 @@ public class Telecom30Cent {
                                 System.out.print("Create Contracts[1], View Contracts[2]: ");
                                 choice = sc.nextLine();
                                 if (choice.equals("1") && customer.getState() == STATE.ACTIVE) {
-                                    try {
-                                        customer.create(Util.createContract(sc));
-                                    } catch (ContractException e) {
-                                        System.out.println("Could not create contract.");
-                                    }
+                                    customer.create(Util.createContract(sc));
                                 } else if (choice.equals("2")) {
                                     ArrayList<Contract> contracts = customer.findAll();
                                     System.out.println("_________________________________________________");
@@ -66,11 +62,7 @@ public class Telecom30Cent {
                                                     if (contractToUpdate.isPresent()) {
                                                         Contract contract = contractToUpdate.get();
                                                         System.out.println(contract);
-                                                        try {
-                                                            customer.create(Util.createContract(sc));
-                                                        } catch (ContractException e) {
-                                                            System.out.println("Could not update contract.");
-                                                        }
+                                                        customer.update(Util.updateContract(sc, contract));
                                                     } else {
                                                         System.out.println("Could not find contract.");
                                                     }
@@ -106,7 +98,7 @@ public class Telecom30Cent {
                                                             System.out.print("Services: ");
                                                             services.forEach(System.out::println);
                                                             System.out.println("_________________________________________________");
-                                                            System.out.print("Create Service[1], Delete Service[2]: ");
+                                                            System.out.print("Exit[0], Create Service[1], Delete Service[2]: ");
                                                             choice = sc.nextLine();
                                                             if ( // if customer, contract and subscription are active
                                                                     Objects.equals(choice, "1") &&
@@ -139,6 +131,8 @@ public class Telecom30Cent {
                                                                 } else {
                                                                     System.out.println("Service not found.");
                                                                 }
+                                                            } else if (choice.equals("0")) {
+
                                                             } else {
                                                                 System.out.println("Customer, Contract or Subscription are not active.");
                                                             }
@@ -273,9 +267,9 @@ public class Telecom30Cent {
                 System.out.println("Products: ");
                 pm.getProducts().forEach(System.out::println);
                 System.out.println("_________________________________________");
-                System.out.print("Exit[0], Create[1], Delete[2], View who purchased[3], Products cheaper than[4], Products by type[5], Products that will expire[6]: ");
-                String choiceprod = sc.nextLine();
                 while(true) {
+                    System.out.print("Exit[0], Create[1], Delete[2], View who purchased[3], Products cheaper than[4], Products by type[5], Products that will expire[6]: ");
+                    String choiceprod = sc.nextLine();
                     if (choiceprod.equals("1")) {
                         try {
                             pm.create(Util.getProduct(sc));
@@ -296,7 +290,7 @@ public class Telecom30Cent {
                         break;
                     } else if(choiceprod.equals("3")) {
                         System.out.print("Type the product ID to view who purchased that product: ");
-                        String id = sc.nextLine();
+                        String id = sc.nextLine().toUpperCase(); // @TODO check
                         Optional<Product> prod;
                         if ((prod = pm.findById(id)).isPresent()) {
                             ArrayList<Subscription> customersByProducts = pm.findCustomersByProducts(prod.get(), cm);
@@ -309,11 +303,11 @@ public class Telecom30Cent {
                         }
                         break;
                     } else if(choiceprod.equals("4")) {
-                        System.out.print("Type the price to view all products cheaper than that: ");
-                        Integer price;
+                        System.out.print("Type the price to view all products cheaper than that (euros): ");
+                        Double price;
                         while (true) {
                             try {
-                                price = sc.nextInt();
+                                price = sc.nextDouble();
                                 sc.nextLine();
                                 break;
                             } catch (InputMismatchException e) {
@@ -366,6 +360,8 @@ public class Telecom30Cent {
                     }
                     else if (choiceprod.equals("0")) {
                         break;
+                    } else {
+                        System.out.println("Invalid choice.");
                     }
                 }
 

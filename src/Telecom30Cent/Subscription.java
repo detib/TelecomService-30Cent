@@ -51,6 +51,7 @@ public class Subscription implements TelecomService<Service>, ContactService {
         this.createdDate = createdDate;
         this.state = state;
         this.contact = contact;
+        this.services = findAll();
     }
 
     @Override

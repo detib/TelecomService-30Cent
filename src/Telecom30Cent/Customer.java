@@ -34,7 +34,11 @@ public class Customer implements TelecomService<Contract>, ContactService {
     @ToString.Exclude
     private ArrayList<Contract> contracts;
 
+<<<<<<< HEAD
 //    { this.contracts = findAll(); }
+=======
+
+>>>>>>> 0b8023c (changed main, fixed typos, fixed state issues)
 
     public Customer(CustomerType customerType, Contact contact) {
         this.id = ID.CUSTOMER.createId();
@@ -50,6 +54,7 @@ public class Customer implements TelecomService<Contract>, ContactService {
         this.state = state;
         this.customerType = customerType;
         this.contact = contact;
+        this.contracts = findAll();
     }
 
 
@@ -60,7 +65,7 @@ public class Customer implements TelecomService<Contract>, ContactService {
      * @throws ContractException if the contract already exists
      */
     @Override
-    public boolean create(Contract object) throws ContractException {
+    public boolean create(Contract object) {
         try {
             Connection conn = DatabaseConn.getInstance().getConnection();
             conn.createStatement().execute(String.format(
@@ -75,7 +80,7 @@ public class Customer implements TelecomService<Contract>, ContactService {
             if(this.contracts == null) this.contracts = new ArrayList<>();
             return contracts.add(object);
         } catch (SQLException e) {
-            throw new ContractException("Cannot add a contract to the database!");
+            throw new RuntimeException("Cannot add a contract to the database!");
         }
     }
 
